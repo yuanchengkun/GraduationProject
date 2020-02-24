@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<meta name="X-UA-Compatible" content="IE=edge"/>
+		<title>计算机学院学科竞赛</title>
+		<link rel="stylesheet" type="text/css" th:href="@{/main/css/style.css}"/>
+		<link rel="stylesheet" th:href="@{/res/layui/css/layui.css}">
+	</head>
+	<body>
+		<!--header-->
+		<div class="top_wrap">
+			<!--top index-->
+			<div class="top">
+				<span class="welcome">欢迎您访问成都信息工程大学计算机学院学科竞赛管理网站！</span>
+				<div class="corner">
+					<a onclick=SetHome(this,window.location) title="设为首页" href="javascript:void(0);">设为首页</a>
+					<span>|</span>
+					<a onclick=addFavorite(window.location,document.title) title="添加收藏" href="javascript:void(0);">加入收藏</a>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+
+
+		<!--logo and nav-->
+		<div class="header_wrap">
+			<div class="header">
+				<a href="index.html" class="logo"><img th:src="@{/main/images/newlogo.png}" style="height: 72px"/></a>
+				<div class="nav_list">
+					<ul id="nav" class="nav clearfix">
+						<li class="nLi" style="display: none;"></li>
+						<li class="nLi">
+							<h3><a href="about.html">在线报名</a></h3>
+							<ul class="sub">
+								<li><a href="about.html">ACM中国</a></li>
+								<li><a href="about.html">中国计算机学会</a></li>
+								<li><a href="about.html">互动媒体工作室</a></li>
+							</ul>
+						</li>
+						<li class="nLi">
+							<h3><a href="teachers.html">新闻公告</a></h3>
+							<ul class="sub">
+								<li><a href="teachers.html">综合新闻</a></li>
+								<li><a href="technology.html">通知公告</a></li>
+								<li><a href="technology.html">获奖公告</a></li>
+							</ul>
+						</li>
+						<li class="nLi">
+							<h3><a href="study.html">在线学习</a></h3>
+							<ul class="sub">
+								<li><a href="study.html">学习成果</a></li>
+								<li><a href="study.html">文档学习</a></li>
+								<li><a href="student.html">在线测试</a></li>
+							</ul>
+						</li>
+						<li th:if="${session.loginUser!=null}" class="nLi">
+							<h3>欢迎你<div th:text="${session.loginUser.truename}"></div></h3>
+							<ul class="sub">
+								<li><a href="resource.html">技能类</a></li>
+								<li><a href="resource.html">法文类</a></li>
+								<li><a href="resource.html">其他</a></li>
+								<li><a th:href="@{/LoginAction/logout}">退出登录</a></li>
+							</ul>
+						</li>
+
+						<li th:if="${session.loginUser==null}" class="nLi">
+							<h3><a><img src="http://t.cn/RCzsdCq" class="layui-nav-img"></a></h3>
+							<ul class="sub">
+								<li><a th:href="@{/LoginAction/toLogin}">登录</a></li>
+								<li><a href="about.html">在线注册</a></li>
+							</ul>
+						</li>
+					</ul>
+
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<!--banner-->
+		<div class="banner">
+			<div class="bd">
+				<ul>
+					<li class="first"><a href="javascript:void(0);"></a></li>
+					<li class="second"><a href="javascript:void(0);"></a></li>
+					<li class="third"><a href="javascript:void(0);"></a></li>
+                    <li class="fourth"><a href="javascript:void(0);"></a></li>
+					<li class="fifth"><a href="javascript:void(0);"></a></li>
+				</ul>
+			</div>
+			<div class="hd"><ul></ul></div>
+		</div>
+		<!--content-->
+		<div class="content">
+			<div class="left_tab">
+				<div class="hd">
+					<ul><li class="first">综合新闻</li><li class="second">获奖公开</li><li class="third">团队活动</li></ul>
+				</div>
+				<div class="bd">
+					<div class="box">
+						<a href="about1.html" class="more">MORE+</a>
+						<ul class="clearfix">
+							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a1.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a2.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a3.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a4.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a5.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a6.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+						</ul>
+					</div>
+					<div class="box">
+						<a href="secret.html" class="more">MORE+</a>
+						<ul class="clearfix">
+							<li><a href="secret.html"><img th:src="@{/main/images/s1.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="secret.html"><img th:src="@{/main/images/s2.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="secret.html"><img th:src="@{/main/images/s3.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="secret.html"><img th:src="@{/main/images/s4.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="secret.html"><img th:src="@{/main/images/s5.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="secret.html"><img th:src="@{/main/images/s6.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+						</ul>
+					</div>
+					<div class="box">
+						<a href="news.html" class="more">MORE+</a>
+						<ul class="clearfix">
+							<li><a href="nDetail.html"><img th:src="@{/main/images/n1.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="nDetail.html"><img th:src="@{/main/images/n2.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="nDetail.html"><img th:src="@{/main/images/n3.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="nDetail.html"><img th:src="@{/main/images/n4.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="nDetail.html"><img th:src="@{/main/images/n5.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="nDetail.html"><img th:src="@{/main/images/n6.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="right_box">
+				<!--notice-->
+				<div class="notice">
+					<div class="n_title">
+						<b>最新通知</b>
+						<a href="notice.html">MORE+</a>
+					</div>
+					<div class="bd">
+						<ul class="infoList">
+							<li><a href="nDetail.html">通知标题通知标题，通知标题通知标题通知标题通知标题。</a><span class="date">2016-05-11</span></li>
+							<li><a href="nDetail.html">通知标题通知标题，通知标题通知标题通知标题通知标题。</a><span class="date">2016-05-11</span></li>
+							<li><a href="nDetail.html">通知标题通知标题，通知标题通知标题通知标题通知标题。</a><span class="date">2016-05-11</span></li>
+							<li><a href="nDetail.html">通知标题通知标题，通知标题通知标题通知标题通知标题。</a><span class="date">2016-05-11</span></li>
+							<li><a href="nDetail.html">通知标题通知标题，通知标题通知标题通知标题通知标题。</a><span class="date">2016-05-11</span></li>
+							<li><a href="nDetail.html">通知标题通知标题，通知标题通知标题通知标题通知标题。</a><span class="date">2016-05-11</span></li>
+						</ul>
+					</div>
+				</div>
+				<!--code-->
+				<div class="code">
+					<img th:src="@{/main/images/erweima.png}" />
+				</div>
+			</div>
+			<div class="clear"></div>
+			<div class="friend_link">
+				<b>友情链接：</b><a href="http://jszx.cuit.edu.cn/" target="_blank">计算中心</a><a href="http://www.cuit.edu.cn" target="_blank">成都信息工程大学</a>
+			</div>
+		</div>
+		<!--footer-->
+		<div class="footer_wrap">
+			<div class="line"></div>
+			<div class="footer">
+				<div class="f_left">
+					<img th:src="@{/main/images/jsjxy.jpg}" style="width: 80px;height: 80px" class="f_logo" />
+					<div class="contact">
+						<p><a href="javascrip:void(0);">联系我们</a><a href="javascrip:void(0);">站长统计</a></p>
+						<p>航空港校区&nbsp;&nbsp;&nbsp;&nbsp;所在地址：四川省成都市西南航空经济开发区学府路一段24号</p>
+						<p>版权所有：  成都信息工程大学计算机学院&nbsp;&nbsp;&nbsp;&nbsp;电话：028-85966393&nbsp;&nbsp;&nbsp;&nbsp;</p>
+					</div>
+				</div>
+				<div class="f_right">
+					<p><a href="" style="text-decoration: underline;">官网入口</a></p>
+					<p><a href=""></a></p>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<script type="text/javascript" th:src="@{/main/js/jquery-1.11.0.min.js}" ></script>
+		<script type="text/javascript" th:src="@{/main/js/jquery.SuperSlide.2.1.js}" ></script>
+		<script type="text/javascript" th:src="@{/main/js/common.js}" ></script>
+		<script type="text/javascript">
+			//banner滚动效果
+			jQuery(".banner").slide({ titCell:".hd ul", mainCell:".bd ul", effect:"fold",  autoPlay:true, autoPage:true, trigger:"click" });
+			//tab切换效果
+			jQuery(".left_tab").slide();
+			//news滚动效果
+			jQuery(".notice").slide({mainCell:".bd ul",autoPage:true,effect:"top",autoPlay:true,vis:3});
+		</script>
+	</body>
+</html>

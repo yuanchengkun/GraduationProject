@@ -2,9 +2,18 @@
 <html lang="zh-CN"  xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>毕业设计</title>
+    <title>学科竞赛管理系统首页</title>
+    <link rel="stylesheet" th:href="@{/res/layui/css/layui.css}">
 </head>
-<body>
-首页
+<body class="layui-layout-body">
+
+<script th:src="@{/res/layui/layui.js}"></script>
+<script>
+    //JavaScript代码区域
+    layui.use('element', function(){
+        var element = layui.element;
+
+    });
+</script>
 </body>
 </html>
