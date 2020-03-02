@@ -3,7 +3,7 @@ package com.edu.cuit.competition_management_system.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,11 +11,31 @@ public class Users {
     private String username;
     private String password;
     private String truename;
-    private Integer type;
-    private String describe;
+    private Integer type;//0管理员 1 学生 2 老师
+    private String describe1;
     private String createby;
     private String createtime;
+    @Column(columnDefinition = "integer default 1")
     private Integer state;
+    private String email;
+    private Integer card;
+
+    public Integer getCard() {
+        return card;
+    }
+
+    public void setCard(Integer card) {
+        this.card = card;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public Integer getId() {
         return id;
@@ -57,12 +77,29 @@ public class Users {
         this.type = type;
     }
 
-    public String getDescribe() {
-        return describe;
+    @Override
+    public String toString() {
+        return "Users{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", truename='" + truename + '\'' +
+                ", type=" + type +
+                ", describe1='" + describe1 + '\'' +
+                ", createby='" + createby + '\'' +
+                ", createtime='" + createtime + '\'' +
+                ", state=" + state +
+                ", email='" + email + '\'' +
+                ", card=" + card +
+                '}';
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public String getDescribe1() {
+        return describe1;
+    }
+
+    public void setDescribe1(String describe) {
+        this.describe1 = describe;
     }
 
     public String getCreateby() {
@@ -89,18 +126,4 @@ public class Users {
         this.state = state;
     }
 
-    @Override
-    public String toString() {
-        return "Users{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", truename='" + truename + '\'' +
-                ", type=" + type +
-                ", describe='" + describe + '\'' +
-                ", createby='" + createby + '\'' +
-                ", createtime='" + createtime + '\'' +
-                ", state=" + state +
-                '}';
-    }
 }

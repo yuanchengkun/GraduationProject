@@ -1,7 +1,12 @@
 package com.edu.cuit.competition_management_system.action;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.mail.MailUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.edu.cuit.competition_management_system.entity.Users;
 import com.edu.cuit.competition_management_system.service.UserSign;
+import com.edu.cuit.competition_management_system.util.SendEmail;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author yuanck 2016051230
@@ -115,5 +125,133 @@ public class LoginAction {
     @RequestMapping("toLogin")
     public String toLogin(){
         return "login";
+    }
+
+    @RequestMapping("toReg")
+    public String toReg(){
+        return "reg";
+    }
+
+    /**
+     * 发送邮件
+     * @param toEmail 发送的邮件的地址
+     * @param session
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("sendValidateEmail")
+    public void sendValidateEmail(String toEmail,HttpSession session,HttpServletResponse response) throws IOException {
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+
+        String msg="";
+        //随机生成一个四位的验证码，验证一般有数字和字母组合而成。
+        String randomCode = RandomUtil.randomString(4);
+        try {
+            SendEmail.send(toEmail,randomCode);
+            //MailUtil.send(toEmail, "会议与培训网验证码", "您的邮箱验证码是："+randomCode, false);
+            //把验证码保存到session中。
+            session.setAttribute("randomCode",randomCode);
+            //5分钟后删除session中的验证码
+            this.removeAttrbute(session, "randomCode");
+            msg="send_ok";
+            out.print(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg="send_error";
+            out.print(msg);
+
+        }
+    }
+    /**
+     * 设置5分钟后删除session中的验证码
+     * @param session
+     * @param attrName
+     */
+    private void removeAttrbute(final HttpSession session, final String attrName) {
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // 删除session中存的验证码
+                session.removeAttribute(attrName);
+                timer.cancel();
+            }
+        }, 5 * 60 * 1000);
+    }
+
+
+    /**
+     * 检查用户名是否重复
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("checkUsername")
+    public void checkUsername(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        String username = request.getParameter("username");
+        String msg="";
+        if(!userSign.checkUsernameIsExist(username)) {
+            msg="username_ok";
+            out.print(msg);
+        }
+        else {
+            msg="username_error";
+            out.print(msg);
+        }
+    }
+
+    /**
+     * 检查输入的邮箱验证码
+     * @param request
+     * @param response
+     * @param session
+     * @throws IOException
+     */
+    @RequestMapping("checkCode")
+    public void checkCode(HttpServletRequest request, HttpServletResponse response,HttpSession session) throws IOException{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        String randomCode = (String) session.getAttribute("randomCode");//session中保存的验证码
+        String code = request.getParameter("code");
+        String msg = "";
+        if(code.equals(randomCode)){
+            msg="ok";
+            out.print(msg);
+        }else {
+            msg="error";
+            out.print(msg);
+        }
+    }
+
+    /**
+     * 学生用户在线注册
+     * @param param 用户输入的值
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping("reg")
+    public void reg(String param,HttpServletResponse response) throws Exception{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        Users user = JSON.parseObject(param, new TypeReference<Users>() {});
+        LocalDate today = LocalDate.now();
+        user.setCreatetime(today.toString());
+        user.setState(1);
+        user.setType(1);
+        Users regUser = userSign.save(user);
+        String msg = "";
+        if(regUser!=null){
+            msg="ok";
+            out.print(msg);
+        }else{
+            msg="error";
+            out.print(msg);
+        }
+
+
+
     }
 }

@@ -6,6 +6,8 @@ import com.edu.cuit.competition_management_system.service.UserSign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class UserSignImpl implements UserSign {
     @Autowired
@@ -13,5 +15,17 @@ public class UserSignImpl implements UserSign {
     @Override
     public Users userSign(String username, String password) {
         return findUser.findByUsernameAndPassword(username,password);
+    }
+
+    @Override
+    public boolean checkUsernameIsExist(String username) {
+        if(findUser.findByUsername(username)!=null)
+            return true;
+        else return false;
+    }
+    @Transactional
+    @Override
+    public Users save(Users user) throws Exception {
+        return findUser.save(user);
     }
 }
