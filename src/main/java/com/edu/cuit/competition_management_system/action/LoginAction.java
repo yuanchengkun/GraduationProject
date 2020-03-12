@@ -240,7 +240,6 @@ public class LoginAction {
         LocalDate today = LocalDate.now();
         user.setCreatetime(today.toString());
         user.setState(1);
-        user.setType(1);
         Users regUser = userSign.save(user);
         String msg = "";
         if(regUser!=null){

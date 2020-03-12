@@ -1,0 +1,300 @@
+<!DOCTYPE >
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>教师管理页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!--
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+-->
+    <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+    <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
+    <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input class="layui-input" autocomplete="off" placeholder="开始日" name="start" id="start"></div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input class="layui-input" autocomplete="off" placeholder="截止日" name="end" id="end"></div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>
+                            </button>
+                            <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
+                                <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-body ">
+                    <!--<table class="layui-table"
+                           lay-data="{url: '/helloworld/Admin/student',
+                                   page:true,
+                                   method: 'post',
+                                   toolbar: '#toolbarDemo',
+                                   id:'test',
+                                   parseData:'function(res) {alert(res);console.log(res);}'
+                                   }"
+                           lay-filter="test">
+                        <thead>
+                        <tr>
+                            <th lay-data="{type:'checkbox'}">ID</th>
+                            <th lay-data="{field:'id', width:80, sort: true}">ID</th>
+                            <th lay-data="{field:'username', width:120, sort: true, edit: 'text'}">用户名</th>
+                            <th lay-data="{field:'email', edit: 'text', minWidth: 100}">邮箱</th>
+                            <th lay-data="{field:'createtime', width:100}">创建时间</th>
+                            <th lay-data="{field:'card', edit: 'text', Width: 80}">职工号</th>
+                            <th lay-data="{field:'truename', edit: 'text', minWidth: 80}">真实姓名</th>
+                            &lt;!&ndash;<th lay-data="{field:'experience', sort: true, edit: 'text'}">积分</th>&ndash;&gt;
+                            <th lay-data="{field:'caozuo',toolbar: '#barDemo'}">操作</th>
+                        </thead>
+                    </table>-->
+                        <table id="tabTitle" lay-filter="tabTitle"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/html" id="toolbarDemo">
+    <div class = "layui-btn-container" >
+        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="xadmin.open('添加指导老师','./memberAdd',600,400)"><i class="layui-icon"></i>手动添加</button>
+    </div >
+</script>
+<script type="text/html" id="barDemo">
+    <a onclick="resetPW({{d.id}})" title="重置密码" href="javascript:;">
+        <i class="layui-icon">&#xe631;</i>
+    </a>
+    <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
+        <i class="layui-icon">&#xe640;</i>
+    </a>
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    <!--{{#  if(d.experience > 100){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}-->
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var Url = /*[[@{/AdminMember/user}]]*/;//获取动作地址
+    var selectCom = /*[[@{/AdminMember/selectCom}]]*/;//获取动作地址
+    var updateCOm = /*[[@{/AdminMember/updateCOm}]]*/;//获取动作地址
+
+    /*]]>*/
+    layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
+
+        // 监听修改update到表格中
+        form.on('select(testSelect)', function (data) {
+            var elem = $(data.elem);
+            var id = elem.parents('tr').first().find('td').eq(1).text();//当前用户id
+            $.ajax({
+                url: updateCOm,
+                data:{comid:data.value,id:id},
+                async:true,
+                success:function(msg){
+                    if(msg=="ok"){
+                        layer.msg('修改成功');
+                        return;
+                    }else {
+                        layer.msg('修改失败!',{icon:1,time:1000});
+                    }
+                }
+            })
+
+        });
+        var table = layui.table;
+//执行渲染初始化表格
+        table.render({
+            elem: '#tabTitle' //指定原始表格元素选择器（推荐id选择器）
+            ,url: Url
+            ,height: 'full-100'
+            ,page:true
+            ,method: 'post'
+            ,toolbar: '#toolbarDemo'
+            ,done: function (res, curr, count) {
+
+                count || this.elem.next('.layui-table-view').find('.layui-table-header').css('overflow', 'auto');
+                layui.each($('select'), function (index, item) {
+                    var elem = $(item);
+                    elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+                });
+                form.render();
+            }
+            ,where: {type: 2}
+            ,cols:  [
+                [ //标题栏
+                {checkbox: true}
+                ,{field: 'id', title: 'ID', width: 80,sort: true}
+                ,{field: 'username', title: '用户名', width: 120}
+                ,{field:'truename', edit: 'text', minWidth: 80,title:'真实姓名'}
+                ,{field:'email', edit: 'text', minWidth: 100,title:'邮箱'}
+                ,{field:'createtime', width:100,title:'创建时间'}
+                ,{field:'card', edit: 'text', Width: 80,title:'职工号'}
+                    ,
+                    {
+                        field:'d.com.name',  Width: 80,title:'指导的竞赛',
+                        templet: function (d) {
+                            // 模板的实现方式也是多种多样，这里简单返回固定的
+                            var selMaintenanceItem = '<select name="city" lay-filter="testSelect" lay-verify="required" data-value="' + d.comid + '" >'
+
+                            $.ajax({
+                                url: selectCom,
+                                type: 'post',
+                                async: false,
+                                dataType:"json",
+                                success: function (data) {
+                                    for (k in data.data) {
+                                        selMaintenanceItem += '<option value=' + data.data[k].comid + '>' + data.data[k].name + '</option>';
+                                    }
+                                    selMaintenanceItem
+                                        += '</select>';
+                                }
+                            });
+                            return selMaintenanceItem;
+                        }
+                    }                ,{field:'caozuo',toolbar: '#barDemo',title:'操作'}
+            ]
+            ]
+        });
+    })
+</script>
+
+<script>
+    layui.use('laydate',
+    function() {
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+    });
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var deleteUrl = /*[[@{/AdminMember/setUserState}]]*/;//获取动作地址
+    var resetPwUrl = /*[[@{/AdminMember/resetPw}]]*/;//获取动作地址
+    var update = /*[[@{/AdminMember/update}]]*/;//获取动作地址
+    /*]]>*/
+    layui.use('table', function() {
+        var table = layui.table;
+
+        //监听单元格编辑
+        table.on('edit(tabTitle)',
+            function(obj) {
+                var value = obj.value //得到修改后的值
+                    ,
+                    data = obj.data //得到所在行所有键值
+                    ,
+                    field = obj.field; //得到字段
+                $.ajax({
+                    url: update,
+                    data:{param:JSON.stringify(data)},
+                    async:true,
+                    success:function(msg){
+                        if(msg=="ok"){
+                            layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
+                            return;
+                        }else {
+                            layer.msg('修改失败!',{icon:1,time:1000});
+                        }
+                    }
+                })
+            });
+        //头工具栏事件
+        table.on('toolbar(tabTitle)',
+            function(obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'getCheckData':
+                        var data = checkStatus.data;
+                        layer.alert(JSON.stringify(data));
+                        break;
+                    case 'getCheckLength':
+                        var data = checkStatus.data;
+                        layer.msg('选中了：' + data.length + ' 个');
+                        break;
+                    case 'isAll':
+                        layer.msg(checkStatus.isAll ? '全选': '未全选');
+                        break;
+                }
+                ;
+            });
+
+    });
+
+    /*用户-删除*/
+    function member_del(obj,id){
+        var flag = true;
+        layer.confirm('确认要删除吗?', {icon: 3, title:'提示'}, function(index){
+            //发异步删除数据
+            $.ajax({
+                url: deleteUrl,
+                data:{id:id,state:0},
+                async:true,
+                dataType:'json',
+                success:function(msg){
+                    if(msg=="error"){
+                        flag=false;
+                    }
+                }
+            })
+            if(flag==true){
+                $(obj).parents("tr").remove();
+                layer.msg('已删除!',{icon:1,time:1000});
+            }else {
+                layer.msg('删除失败!',{icon:1,time:1000});
+            }
+            layer.close(index);
+        });
+    }
+    //重置用户密码
+    function resetPW(id) {
+        var flag = true;
+        layer.confirm('确认要重置密码为”000000“吗?', {icon: 3, title:'提示'}, function(index){
+            //发异步删除数据
+            $.ajax({
+                url: resetPwUrl,
+                data:{id:id},
+                async:true,
+                dataType:'json',
+                success:function(msg){
+                    if(msg=="error"){
+                        flag=false;
+                    }
+                }
+            })
+            if(flag==true){
+                layer.msg('重置成功!',{icon:1,time:1000});
+            }else {
+                layer.msg('重置失败!',{icon:1,time:1000});
+            }
+            layer.close(index);
+        });
+    }
+
+</script>
+</html>

@@ -22,7 +22,8 @@ $(document).ready(function(){
 <script th:inline="javascript">
     /*<![CDATA[*/
     var loginUrl = /*[[@{/users/login}]]*/;//获取动作地址
-    var loginSuccessUrl = /*[[@{/BaseAction/main}]]*/;
+    var stuloginSuccessUrl = /*[[@{/BaseAction/main}]]*/;
+    var secloginSuccessUrl = /*[[@{/Admin/toAdmin}]]*/;
     /*]]>*/
 $(function(){
 /*学生登录信息验证*/
@@ -70,14 +71,14 @@ $(".stu_login_error").Validform({
 	},
     callback:function(data){
 	    if(data.status=='y'){
-            window.location.href = loginSuccessUrl;
+            window.location.href = stuloginSuccessUrl;
         }else{
-
         }
     },
 	ajaxPost:true
 });
 /*导师登录信息验证*/
+    {
 $("#tea_username_hide").focus(function(){
  var username = $(this).val();
  if(username=='输入教工号'){
@@ -122,6 +123,7 @@ $(".tea_login_error").Validform({
 	},
 	ajaxPost:true
 });
+    }
 /*教务登录信息验证*/
 $("#sec_username_hide").focus(function(){
  var username = $(this).val();
@@ -165,6 +167,12 @@ $(".sec_login_error").Validform({
 		cssctl(objtip,o.type);
 		objtip.text(msg);
 	},
+    callback:function(data){
+        if(data.status=='y'){
+            window.location.href = secloginSuccessUrl;
+        }else{
+        }
+    },
 	ajaxPost:true
 });
 });
@@ -270,7 +278,7 @@ $(function(){
      <!-- 教务登录开始-->
     <div class="hide">
     <div class="sec_error_box"></div>
-      <form action="" method="post" class="sec_login_error">
+      <form th:action="@{/LoginAction/login}" method="post" class="sec_login_error">
         <div id="username">
           <label>教务号：</label>
           <input type="text" id="sec_username_hide" name="username" value="输入教务号" nullmsg="教务号不能为空！" datatype="s5-18" errormsg="教务号范围在5~18个字符之间！" sucmsg="教务号验证通过！"/>
@@ -282,8 +290,10 @@ $(function(){
         </div>
         <div id="code">
           <label>验证码：</label>
-          <input type="text" id="sec_code_hide" name="code"  value="输入验证码" nullmsg="验证码不能为空！" datatype="*4-4" errormsg="验证码有4位数！" sucmsg="验证码验证通过！"/>
-          <img src="images/captcha.jpg" title="点击更换" alt="验证码占位图"/> </div>
+          <input type="text" id="stu_code_hide" name="validatecode"  value="输入验证码" nullmsg="验证码不能为空！" datatype="*4-4" errormsg="验证码有4位数！" sucmsg="验证码验证通过！"/>
+          <img th:src="@{/LoginAction/defaultKaptcha}" alt="验证码" title="看不清楚，点击换一张"
+               onclick="this.src='./defaultKaptcha?d='+new Date()*1"/>
+        </div>
         <div id="remember">
           <input type="checkbox" name="remember">
           <label>记住密码</label>

@@ -27,6 +27,7 @@
 *
 * 详细代码请看register.src.js
 */
+document.write("<script type='text/javascript' src='/helloworld/res/layer/layer.js'></script>");
 (function($) {
 	var h, timerC = 60,
 		opt;
@@ -40,7 +41,7 @@
 		var g = {
 			phone: /^1(3\d|5[0-35-9]|8[025-9]|47)\d{8}$/,
 			company: /^[一-龥a-zA-Z][一-龥a-zA-Z0-9\s-,-.]*$/,
-			uname: /^[0-9a-zA-Z]*$/g,
+			uname: /^[A-Za-z0-9]+$/,
 			zh: /^[一-龥]+$/,
 			card: /^\d{10}$/,
 			int: /^[0-9]*$/,
@@ -128,7 +129,9 @@
                         //dataType:'text',
                         success:function(msg){
                             if(msg=='send_ok'){
-                                alert("验证码已经成功发送至邮箱，请查收！");
+                                //alert("验证码已经成功发送至邮箱，请查收！");
+                                layer.msg('验证码已经成功发送至你的邮箱，请查收！');
+
                             }else{
                                 alert("验证码发送失败！");
                             }

@@ -11,7 +11,7 @@ public class Users {
     private String username;
     private String password;
     private String truename;
-    private Integer type;//0管理员 1 学生 2 老师
+    private Integer type;/*0管理员 1 学生 2 老师*/
     private String describe1;
     private String createby;
     private String createtime;
@@ -19,6 +19,39 @@ public class Users {
     private Integer state;
     private String email;
     private Integer card;
+    private Integer teamid;/*学生的团队*/
+    private Integer comid;/*学生参加的竞赛或老师指导的竞赛*/
+
+    public Integer getTeamid() {
+        return teamid;
+    }
+
+    public void setTeamid(Integer teamid) {
+        this.teamid = teamid;
+    }
+
+    public Integer getComid() {
+        return comid;
+    }
+
+    public void setComid(Integer comid) {
+        this.comid = comid;
+    }
+
+    public Competition getCom() {
+        return com;
+    }
+
+    public void setCom(Competition com) {
+        this.com = com;
+    }
+
+    @Transient
+
+    private Competition com;/*学生参加的竞赛或老师指导的竞赛*/
+
+
+
 
     public Integer getCard() {
         return card;
@@ -27,7 +60,6 @@ public class Users {
     public void setCard(Integer card) {
         this.card = card;
     }
-
 
     public String getEmail() {
         return email;
@@ -77,23 +109,6 @@ public class Users {
         this.type = type;
     }
 
-    @Override
-    public String toString() {
-        return "Users{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", truename='" + truename + '\'' +
-                ", type=" + type +
-                ", describe1='" + describe1 + '\'' +
-                ", createby='" + createby + '\'' +
-                ", createtime='" + createtime + '\'' +
-                ", state=" + state +
-                ", email='" + email + '\'' +
-                ", card=" + card +
-                '}';
-    }
-
     public String getDescribe1() {
         return describe1;
     }
@@ -125,5 +140,4 @@ public class Users {
     public void setState(Integer state) {
         this.state = state;
     }
-
 }

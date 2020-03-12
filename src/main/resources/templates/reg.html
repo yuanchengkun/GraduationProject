@@ -9,6 +9,7 @@
 <link th:href="@{/reg/css/index.css}" rel="stylesheet">
 <script th:src="@{/reg/js/jquery-1.11.1.min.js}"></script>
 <script th:src="@{/reg/js/register.js}"></script>
+<script th:src="@{/res/layer/layer.js}"></script>
 </head>
 <body class="bgf4">
 <div class="login-box f-mt10 f-pb50">
@@ -40,6 +41,8 @@
                         <span class="intelligent-label f-fl"><b class="ftx04">*</b>用户名：</span>    
                         <div class="f-fl item-ifo">
                             <input type="text" maxlength="18" class="txt03 f-r3 required formdata" tabindex="1" data-valid="isNonEmpty||between:6-18||isUname" data-error="用户名不能为空||用户名长度6-18位||只能输入字母或数字" id="username" />                            <span class="ie8 icon-close close hide"></span>
+                            <input type="text"  style="display:none" id="type" value="1" class="formdata" />
+                            <span class="ie8 icon-close close hide"></span>
                             <label class="icon-sucessfill blank hide"></label>
                             <label class="focus"><span>6-18位，纯字母或数字</span></label>
                             <label class="focus valid"></label>
@@ -210,7 +213,8 @@ $(function(){
             }
         });
         if(!flag){
-            alert("该用户名已被占用");
+            flag=true;
+            layer.msg('该用户名已被占用');
             return false;
         }
 
@@ -239,7 +243,7 @@ $(function(){
             }
         });
         if(!flag){
-            alert("验证码输入错误");
+            layer.msg('验证码输入错误');
             return false;
         }
 		$(".part2").hide();
@@ -275,7 +279,7 @@ $(function(){
             }
         })
         if(!flag){
-            alert("注册失败");
+            layer.msg('注册失败');
             return false;
         }
 		$(".part3").hide();
