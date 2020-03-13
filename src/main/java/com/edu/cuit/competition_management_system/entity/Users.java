@@ -20,7 +20,16 @@ public class Users {
     private String email;
     private Integer card;
     private Integer teamid;/*学生的团队*/
-    private Integer comid;/*学生参加的竞赛或老师指导的竞赛*/
+    private Integer comid;/*学生报名的竞赛*/
+    private Integer comtpid;/*老师指导的竞赛类型*/
+
+    public Integer getComtpid() {
+        return comtpid;
+    }
+
+    public void setComtpid(Integer comtpid) {
+        this.comtpid = comtpid;
+    }
 
     public Integer getTeamid() {
         return teamid;

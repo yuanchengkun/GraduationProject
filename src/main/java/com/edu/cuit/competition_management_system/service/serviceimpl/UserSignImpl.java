@@ -23,6 +23,11 @@ public class UserSignImpl implements UserSign {
     public Users userSign(String username, String password) {
         return findUser.findByUsernameAndPassword(username,password);
     }
+    @Transactional
+    @Override
+    public void setUserComtp(int id, int comtpid) {
+        findUser.setUserComtp(id,comtpid);
+    }
 
     @Override
     public boolean checkUsernameIsExist(String username) {

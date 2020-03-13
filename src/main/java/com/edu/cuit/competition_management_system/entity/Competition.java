@@ -8,22 +8,20 @@ public class Competition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer comid;//竞赛id
-    private String name;//竞赛名称
-    private String type;//竞赛种类
-    private String starttime;//竞赛开始时间
-    private String endtime;//竞赛结束时间
-    private Integer state;//竞赛状态
+    private Integer comtpid;//竞赛种类id
+    private String starttime;//竞赛报名开始时间
+    private String endtime;//竞赛报名结束时间
+    private String comtime;//竞赛开始时间
+    private String miaosu;//竞赛描述
+    @Transient
+    private Competitiontype competitiontype;//内置竞赛种类对象
 
-    @Override
-    public String toString() {
-        return "Competition{" +
-                "comid=" + comid +
-                ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", starttime='" + starttime + '\'' +
-                ", endtime='" + endtime + '\'' +
-                ", state=" + state +
-                '}';
+    public Competitiontype getCompetitiontype() {
+        return competitiontype;
+    }
+
+    public void setCompetitiontype(Competitiontype competitiontype) {
+        this.competitiontype = competitiontype;
     }
 
     public Integer getComid() {
@@ -34,20 +32,12 @@ public class Competition {
         this.comid = comid;
     }
 
-    public String getName() {
-        return name;
+    public Integer getComtpid() {
+        return comtpid;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setComtpid(Integer comtpid) {
+        this.comtpid = comtpid;
     }
 
     public String getStarttime() {
@@ -66,11 +56,19 @@ public class Competition {
         this.endtime = endtime;
     }
 
-    public Integer getState() {
-        return state;
+    public String getComtime() {
+        return comtime;
     }
 
-    public void setState(Integer state) {
-        this.state = state;
+    public void setComtime(String comtime) {
+        this.comtime = comtime;
+    }
+
+    public String getMiaosu() {
+        return miaosu;
+    }
+
+    public void setMiaosu(String miaosu) {
+        this.miaosu = miaosu;
     }
 }

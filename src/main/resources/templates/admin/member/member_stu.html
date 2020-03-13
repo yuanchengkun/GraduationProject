@@ -44,28 +44,6 @@
                             </form>
                         </div>
                         <div class="layui-card-body ">
-                            <!--<table class="layui-table"
-                                   lay-data="{url: '/helloworld/Admin/student',
-                                   page:true,
-                                   method: 'post',
-                                   toolbar: '#toolbarDemo',
-                                   id:'test',
-
-                                   }"
-                                   lay-filter="test">
-                                <thead>
-                                    <tr>
-                                        <th lay-data="{type:'checkbox'}">ID</th>
-                                        <th lay-data="{field:'id', width:80, sort: true}">ID</th>
-                                        <th lay-data="{field:'username', width:120, sort: true, edit: 'text'}">用户名</th>
-                                        <th lay-data="{field:'email', edit: 'text', minWidth: 100}">邮箱</th>
-                                        <th lay-data="{field:'createtime', width:100}">创建时间</th>
-                                        <th lay-data="{field:'card', edit: 'text', Width: 80}">学号</th>
-                                        <th lay-data="{field:'truename', edit: 'text', minWidth: 80}">真实姓名</th>
-                                        &lt;!&ndash;<th lay-data="{field:'experience', sort: true, edit: 'text'}">积分</th>&ndash;&gt;
-                                        <th lay-data="{field:'caozuo',toolbar: '#barDemo'}">操作</th>
-                                </thead>
-                            </table>-->
                             <table id="tabTitle" lay-filter="tabTitle"></table>
                         </div>
                     </div>
@@ -95,7 +73,7 @@
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        var Url = /*[[@{/AdminMember/user}]]*/;//获取动作地址
+        var Url = /*[[@{/AdminMember/pageUser}]]*/;//获取动作地址
         var selectCom = /*[[@{/AdminMember/selectCom}]]*/;//获取动作地址
         var updateCOm = /*[[@{/AdminMember/updateCOm}]]*/;//获取动作地址
 
@@ -127,8 +105,10 @@
             table.render({
                 elem: '#tabTitle' //指定原始表格元素选择器（推荐id选择器）
                 ,url: Url
-                ,height: 'full-100'
+                ,height: 'full-150'
                 ,page:true
+                ,limit:10
+                ,limits:[5,10,15,20]
                 ,method: 'post'
                 ,toolbar: '#toolbarDemo'
                 ,done: function (res, curr, count) {
@@ -163,7 +143,7 @@
                                     dataType:"json",
                                     success: function (data) {
                                         for (k in data.data) {
-                                            selMaintenanceItem += '<option value=' + data.data[k].comid + '>' + data.data[k].name + '</option>';
+                                            selMaintenanceItem += '<option value=' + data.data[k].comid + '>' + data.data[k].competitiontype.name + '</option>';
                                         }
                                         selMaintenanceItem
                                             += '</select>';
@@ -191,7 +171,6 @@
             laydate.render({
                 elem: '#start' //指定元素
             });
-
             //执行一个laydate实例
             laydate.render({
                 elem: '#end' //指定元素

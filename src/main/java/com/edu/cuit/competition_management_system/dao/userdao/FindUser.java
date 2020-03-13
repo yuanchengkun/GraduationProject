@@ -24,4 +24,7 @@ public interface FindUser extends JpaRepository <Users,Integer>{
     @Modifying
     @Query("update Users u set u.comid = ?2 where u.id = ?1")
     void setUserCom(int id, int comid); //通过用户id修改用户选择的竞赛id
+    @Modifying
+    @Query("update Users u set u.comtpid = ?2 where u.id = ?1")
+    void setUserComtp(int id, int comtpid); //通过用户id修改用户选择的竞赛id
 }

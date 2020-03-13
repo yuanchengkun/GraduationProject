@@ -28,9 +28,11 @@
                 <div class="layui-card-body ">
                     <form class="layui-form layui-col-space5">
                         <div class="layui-inline layui-show-xs-block">
-                            <input class="layui-input" autocomplete="off" placeholder="开始日" name="start" id="start"></div>
+                            <input class="layui-input" autocomplete="off" placeholder="开始日" name="start" id="start">
+                        </div>
                         <div class="layui-inline layui-show-xs-block">
-                            <input class="layui-input" autocomplete="off" placeholder="截止日" name="end" id="end"></div>
+                            <input class="layui-input" autocomplete="off" placeholder="截止日" name="end" id="end">
+                        </div>
                         <div class="layui-inline layui-show-xs-block">
                             <input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input"></div>
                         <div class="layui-inline layui-show-xs-block">
@@ -93,9 +95,9 @@
 </script>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var Url = /*[[@{/AdminMember/user}]]*/;//获取动作地址
-    var selectCom = /*[[@{/AdminMember/selectCom}]]*/;//获取动作地址
-    var updateCOm = /*[[@{/AdminMember/updateCOm}]]*/;//获取动作地址
+    var Url = /*[[@{/AdminMember/pageUser}]]*/;//获取动作地址
+    var selectComtp = /*[[@{/AdminMember/selectComtp}]]*/;//获取动作地址
+    var updateCOmtp = /*[[@{/AdminMember/updateCOmtp}]]*/;//获取动作地址
 
     /*]]>*/
     layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
@@ -105,8 +107,8 @@
             var elem = $(data.elem);
             var id = elem.parents('tr').first().find('td').eq(1).text();//当前用户id
             $.ajax({
-                url: updateCOm,
-                data:{comid:data.value,id:id},
+                url: updateCOmtp,
+                data:{comtpid:data.value,id:id},
                 async:true,
                 success:function(msg){
                     if(msg=="ok"){
@@ -124,8 +126,10 @@
         table.render({
             elem: '#tabTitle' //指定原始表格元素选择器（推荐id选择器）
             ,url: Url
-            ,height: 'full-100'
+            ,height: 'full-150'
             ,page:true
+            ,limit:10
+            ,limits:[5,10,15,20]
             ,method: 'post'
             ,toolbar: '#toolbarDemo'
             ,done: function (res, curr, count) {
@@ -149,19 +153,19 @@
                 ,{field:'card', edit: 'text', Width: 80,title:'职工号'}
                     ,
                     {
-                        field:'d.com.name',  Width: 80,title:'指导的竞赛',
+                        field:'',  Width: 80,title:'指导的竞赛类型',
                         templet: function (d) {
                             // 模板的实现方式也是多种多样，这里简单返回固定的
-                            var selMaintenanceItem = '<select name="city" lay-filter="testSelect" lay-verify="required" data-value="' + d.comid + '" >'
+                            var selMaintenanceItem = '<select name="city" lay-filter="testSelect" lay-verify="required" data-value="' + d.comtpid + '" >'
 
                             $.ajax({
-                                url: selectCom,
+                                url: selectComtp,
                                 type: 'post',
                                 async: false,
                                 dataType:"json",
                                 success: function (data) {
                                     for (k in data.data) {
-                                        selMaintenanceItem += '<option value=' + data.data[k].comid + '>' + data.data[k].name + '</option>';
+                                        selMaintenanceItem += '<option value=' + data.data[k].comtpid + '>' + data.data[k].name + '</option>';
                                     }
                                     selMaintenanceItem
                                         += '</select>';

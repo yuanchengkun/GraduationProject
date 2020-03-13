@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>竞赛管理列表</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+        <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+        <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
+        <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+        <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+        <!--[if lt IE 9]>
+        <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+        <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+
+                        <div class="layui-card-body ">
+
+                            <table id="tabTitle" lay-filter="tabTitle"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+    <script type="text/html" id="toolbarDemo">
+        <div class = "layui-btn-container" >
+            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+            <button class="layui-btn"  lay-submit="" onclick="xadmin.open('添加竞赛项目','./competitionAdd',600,550)"><i class="layui-icon"></i>增加</button>
+            <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
+                <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+            </button>
+        </div >
+    </script>
+    <script type="text/html" id="barDemo">
+        <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
+            <i class="layui-icon">&#xe640;</i>
+        </a>
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var Url = /*[[@{/AdminCompetition/pageCom}]]*/;//获取动作地址
+        var update = /*[[@{/AdminCompetition/update}]]*/;//获取动作地址
+        /*]]>*/
+        //表格初始化
+        layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
+            var table = layui.table;
+            //执行渲染初始化表格
+            table.render({
+                elem: '#tabTitle' //指定原始表格元素选择器（推荐id选择器）
+                ,url: Url
+                ,height: 'full-100'
+                ,page:true
+                ,limit:10
+                ,limits:[5,10,15,20]
+                ,method: 'post'
+                ,toolbar: '#toolbarDemo'
+                ,where: {type: 1}
+                ,cols:  [
+                    [ //标题栏
+                        {checkbox: true}
+                        ,{field: 'comid', title: 'ID', width: 60,sort: true}
+                        ,{field: '', title: '竞赛种类', minWidth: 120,templet: function (d) {
+                            return d.competitiontype.name;
+                        }}
+                        ,{
+                            field:'comtime', Width:100,title:'竞赛开始时间' ,event:'editComDate',sort: true,templet: function (d) {
+                            return d.comtime;
+                            }
+                        }
+                        ,{
+                            field:'starttime', Width:100,title:'开始报名时间' ,event:'editStartDate',templet: function (d) {
+                            return d.starttime;
+                            }
+                        }
+                        ,{
+                            field:'endtime',  Width: 100,title:'结束报名时间',event:'editEndDate',templet: function (d) {
+                            return d.endtime;
+                            }
+                         }
+                        /*,{
+                            field:'',  Width: 50,title:'状态'
+                        ,templet: function (d) {
+                                var n=d.state==1?'checked':'';
+                            var selMaintenanceItem = '<input type="checkbox" name="switch"  lay-text="开启|停用"  ' +
+                                'lay-skin="switch" '+n+'>'
+                            return selMaintenanceItem;
+                        }
+                        }*/
+                        ,{field:'miaosu', edit: 'text', minWidth: 150,title:'描述'}
+                        ,{field:'caozuo',toolbar: '#barDemo',title:'操作'}
+                    ]
+                ]
+            });
+        })
+
+    </script>
+    <script>
+        layui.use(['table','laydate'], function() {
+            var table = layui.table;
+            var laydate = layui.laydate;
+            table.on('tool(tabTitle)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'editStartDate') {
+                    var field = $(this).data('field');
+                    laydate.render({
+                        elem: this.firstChild
+                        , show: true //直接显示
+                        , closeStop: this
+                        , done: function (value, date) {
+                            var startDate = new Date(value).getTime();
+                            var endTime = new Date(data["endtime"]).getTime();
+                            if (endTime < startDate) {
+                                layer.msg('开始时间应该在结束时间之前');
+                                data[field]=data["endtime"]
+                            }else {
+                                data[field] = value;
+                                obj.update(data);
+                                //发送异步信息修改数据库
+                                $.ajax({
+                                    url: update,
+                                    data:{param:JSON.stringify(data)},
+                                    async:true,
+                                    success:function(msg){
+                                        if(msg=="ok"){
+                                            layer.msg('[ID: ' + data.comid + '] ' + field + ' 字段更改为：' + value);
+                                            return;
+                                        }else {
+                                            layer.msg('修改失败!',{icon:1,time:1000});
+                                        }
+                                    }
+                                })
+                            }
+                            obj.update(data);
+                        }
+                    });
+                }
+                else if (obj.event === 'editEndDate') {
+
+                    var field = $(this).data('field');
+                    laydate.render({
+                        elem: this.firstChild
+                        , show: true //直接显示
+                        , closeStop: this
+                        , done: function (value, date) {
+                            var endTime = new Date(value).getTime();
+                            var startDate = new Date(data["starttime"]).getTime();
+                            var comTime = new Date(data["comtime"]).getTime();
+                            if (endTime < startDate) {
+                                layer.msg('结束时间应该在开始时间之后');
+                                data[field]=data["starttime"]
+                            }else if (endTime > comTime) {
+                                layer.msg('报名结束时间应该在竞赛开始之前');
+                                data[field]=data["comtime"]
+                            } else {
+                                data[field] = value;
+                                obj.update(data);
+                                //发送异步信息修改数据库
+                                $.ajax({
+                                    url: update,
+                                    data:{param:JSON.stringify(data)},
+                                    async:true,
+                                    success:function(msg){
+                                        if(msg=="ok"){
+                                            layer.msg('[ID: ' + data.comid + '] ' + field + ' 字段更改为：' + value);
+                                            return;
+                                        }else {
+                                            layer.msg('修改失败!',{icon:1,time:1000});
+                                        }
+                                    }
+                                })
+                            }
+                            obj.update(data);
+                        }
+                    });
+                }
+                else if(obj.event === 'editComDate'){
+                    var field = $(this).data('field');
+                    laydate.render({
+                          elem: this.firstChild
+                        , show: true //直接显示
+                        , closeStop: this
+                        , done: function (value, date) {
+                            var comTime = new Date(value).getTime();
+                            var endDate = new Date(data["endtime"]).getTime();
+                            console.log(comTime+endDate);
+                            if (endDate > comTime) {
+                                layer.msg('竞赛开始时间应该在报名结束时间之后');
+                                data[field]=data["endtime"]
+                            }else {
+                                data[field] = value;
+                                obj.update(data);
+                                //发送异步信息修改数据库
+                                $.ajax({
+                                    url: update,
+                                    data:{param:JSON.stringify(data)},
+                                    async:true,
+                                    success:function(msg){
+                                        if(msg=="ok"){
+                                            layer.msg('[ID: ' + data.comid + '] ' + field + ' 字段更改为：' + value);
+                                            return;
+                                        }else {
+                                            layer.msg('修改失败!',{icon:1,time:1000});
+                                        }
+                                    }
+                                })
+                            }
+                            obj.update(data);
+                        }
+                    });
+                }
+            });
+            table.on('edit(tabTitle)',
+                function(obj) {
+                    var value = obj.value //得到修改后的值
+                        ,
+                        data = obj.data //得到所在行所有键值
+                        ,
+                        field = obj.field; //得到字段
+                    $.ajax({
+                        url: update,
+                        data:{param:JSON.stringify(data)},
+                        async:true,
+                        success:function(msg){
+                            if(msg=="ok"){
+                                layer.msg('[ID: ' + data.comid + '] ' + field + ' 字段更改为：' + value);
+                                return;
+                            }else {
+                                layer.msg('修改失败!',{icon:1,time:1000});
+                            }
+                        }
+                    })
+                });
+        });
+        /*layui.use('laydate',
+            function() {
+                var laydate = layui.laydate;
+
+                //执行一个laydate实例
+                laydate.render({
+                    elem: '#starttime1' //指定元素
+                });
+                //执行一个laydate实例
+                laydate.render({
+                    elem: '#endtime1' //指定元素
+                });
+
+            });*/
+        layui.use(['form'], function(){
+            form = layui.form;
+
+        });
+
+        /*用户-删除*/
+        function member_del(obj,id){
+            layer.confirm('确认要删除吗？',function(index){
+                //发异步删除数据
+                $(obj).parents("tr").remove();
+                layer.msg('已删除!',{icon:1,time:1000});
+            });
+        }
+    </script>
+</html>

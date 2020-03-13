@@ -17,4 +17,5 @@ public interface UserSign {
     public List<Users> findAllDelUser();//查询所有无效状态用户
     public void setUserPass(int id,String pass);//根据用户id修改用户密码
     public void setUserCom(int id,int comid);//根据用户id修改用户选择的竞赛
+    public void setUserComtp(int id,int comtpid);//根据用户id修改老师指导的竞赛类型
 }
