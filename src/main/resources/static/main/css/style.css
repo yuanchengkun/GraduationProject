@@ -88,18 +88,23 @@ ul,li{
 }
 .banner .bd li.first{
 	background: url(../images/banner1.jpg) center center no-repeat;
+	background-size:100% 100%;
 }
 .banner .bd li.second{
-	background: url(../images/banner2.jpg) center center no-repeat;
+	background: url(../images/banner2.jpg) center center no-repeat ;
+	background-size:100% 100%;
 }
 .banner .bd li.third{
 	background: url(../images/banner3.jpg) center center no-repeat;
+	background-size:100% 100%;
 }
 .banner .bd li.fourth{
 	background: url(../images/banner4.jpg) center center no-repeat;
+	background-size:100% 100%;
 }
 .banner .bd li.fifth{
 	background: url(../images/banner5.jpg) center center no-repeat;
+	background-size:100% 100%;
 }
 .banner .bd li a{ 
 	display: block; height: 560px;

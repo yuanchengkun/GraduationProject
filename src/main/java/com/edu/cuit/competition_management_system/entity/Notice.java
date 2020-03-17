@@ -8,20 +8,18 @@ public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer notid;
-    private Integer type;//消息种类
+    private Integer type;//消息种类 0:通知
     private String title;//消息标题
     private String content;//消息内容
     private String sendtime;//发送时间
+    private String username;//发布人姓名
 
-    @Override
-    public String toString() {
-        return "Notice{" +
-                "notid=" + notid +
-                ", type=" + type +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", sendtime='" + sendtime + '\'' +
-                '}';
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Integer getNotid() {

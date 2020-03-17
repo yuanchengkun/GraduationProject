@@ -1,0 +1,27 @@
+*,h1,.table,label,td,tr,h2{padding: 0;margin: 0}
+
+.top_out{padding-bottom: 10px;}
+.table tr td:nth-child(2n+1){background-color: #f9f9f9;text-align: right;font-weight: bold;color: #46647e;font-size: 14px;width:120px;line-height: 40px }
+.top{ border:1px solid #c1d3de;border-top: none}
+.top td{border: 2px #efefef solid}
+.top select,.top input{text-align: left;border: 1px #ccc solid;width: 100%;height: 40px;border-radius: 4px}
+.top td textarea{width: 100%;height: 150px;resize: none;border:  1px #ccc solid;border-radius: 4px}
+.bot_btn{width: 100%;height: 30px;text-align: center}
+.bot_btn .btn{width: 60px;height: 30px;background-color: #68b86c;border: none;border-radius: 6px;color: #fff;margin-right: 15px;text-align: center}
+.bot_btn .btn1,.bot_btn .btn1 a{background-color: #c1d3de;border: none;border-radius: 6px;color: #000;margin-right: 0;text-decoration: none}
+.bot_btn .btn1 a{display: block}
+.title{  background: repeat-x; border:1px solid #c1d3de; overflow:visible;}
+.title h2{line-height:33px; margin-left:7px; padding-left:22px; font-weight:bold; font-size:14px; font-family:'宋体'; color:#000000; background: no-repeat left center;}
+.i_start {
+    width: 8px;
+    height: 8px;
+    position: relative;
+    display: inline-block;
+
+
+    margin-right: 5px;
+    top:-2px;
+}
+.raido{
+  position: relative;top:2px;margin-left: 5px;margin-right: 10px;
+}

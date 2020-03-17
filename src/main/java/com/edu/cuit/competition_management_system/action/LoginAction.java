@@ -1,7 +1,6 @@
 package com.edu.cuit.competition_management_system.action;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.extra.mail.MailUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.edu.cuit.competition_management_system.entity.Users;
@@ -119,7 +118,7 @@ public class LoginAction {
             session.removeAttribute("loginUser");
 
         }
-        return "main/index";
+        return "index";
     }
 
     @RequestMapping("toLogin")
