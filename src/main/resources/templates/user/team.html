@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-X-admin2.2</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!--
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+-->
+        <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+        <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+        <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+        <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+        <script type="text/javascript" th:src="@{/res/jquery/jquery-3.3.1.min.js}"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+    <body>
+        <div class="layui-fluid">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md12" th:if="${userCom==null&&userTeam==null}">
+                        <div class="layui-card">
+                            <div class="layui-card-header">你还没有报名竞赛,以下是竞赛的类型</div>
+                            <div class="layui-card-body ">
+                                <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                    <li class="layui-col-md2 layui-col-xs6" th:each="comTp:${session.comTp}">
+                                        <a th:href="@{/User/signUp(id=${comTp.comtpid})}" class="x-admin-backlog-body" target="_blank">
+                                            <div th:text="${comTp.name}"></div>
+                                            <p>现在报名</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!--没有团队且没有报名竞赛-->
+                    <div class="layui-col-md12" th:if="${userCom!=null&&userTeam==null}">
+                        <div class="layui-card">
+                            <div class="layui-card-header">你还没有参加竞赛团队，以下是该竞赛的团队点击申请参加
+                                <button class="layui-btn layui-btn-normal" style="float: right" id="creatTeam">自己创建团队</button>
+                            </div>
+                            <div class="layui-card-body ">
+                                <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                    <li class="layui-col-md2 layui-col-xs6" th:each="team:${teamList}">
+                                        <a th:onclick="teambm([[${team.teamid}]])" class="x-admin-backlog-body" target="_blank">
+                                            <div class="layui-row layui-col-space10">
+                                                <p class="layui-col-xs6">团队名称:<span th:text="${team.teamname}"></span></p>
+                                                <p class="layui-col-xs6">指导老师:<span th:text="${team.teacher.truename}"></span></p>
+                                            </div>
+                                            <div class="layui-row layui-col-space10">
+                                                <p class="layui-col-xs6">学生队长:<span th:text="${team.captain.truename}"></span></p>
+                                                <p class="layui-col-xs6">团队介绍:<span th:text="${team.info}"></span></p>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="layui-card">
+                            <div class="layui-card-header">我的团队申请记录</div>
+                            <div class="layui-card-body ">
+                                <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                    <li class="layui-col-md2 layui-col-xs6" th:each="teamUser:${teamUserList}">
+                                        <a href="#" class="x-admin-backlog-body layui-row layui-col-space10">
+                                            <div class="layui-col-xs6">
+                                                <h3>申请的团队名称</h3>
+                                                <p><cite th:text="${teamUser.team.teamname}">12</cite></p>
+                                            </div>
+                                            <div class="layui-col-xs6">
+                                                <h3>申请的状态</h3>
+                                                <p><cite th:text="${teamUser.teamUserState.value}">12</cite></p>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="layui-col-md2 layui-col-xs6" th:if="${creatTeam!=null}">
+                                        <a href="#" class="x-admin-backlog-body layui-row layui-col-space10">
+                                            <div class="layui-col-xs6">
+                                                <h3>申请的团队名称</h3>
+                                                <p><cite th:text="${creatTeam.teamname}">12</cite></p>
+                                            </div>
+                                            <div class="layui-col-xs6">
+                                                <h3>申请的状态</h3>
+                                                <p><cite >待指导老师批准创建</cite></p>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!--没有团队但是报名了竞赛-->
+                    <div class="layui-col-md12" th:if="${userTeam!=null}">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                    <div class="layui-row layui-col-space10">
+                                        <p class="layui-col-xs3">团队名称:<span th:text="${userTeam.teamname}"></span></p>
+                                        <p class="layui-col-xs3">指导老师:<span th:text="${userTeam.teacher.truename}"></span></p>
+                                        <p class="layui-col-xs3">学生队长:<span th:text="${userTeam.captain.truename}"></span></p>
+                                        <p class="layui-col-xs3">团队介绍:<span th:text="${userTeam.info}"></span></p>
+                                    </div>
+                            </div>
+                            <div class="layui-card-body ">
+                                <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                    <li class="layui-col-md2 layui-col-xs6" th:each="teamUser:${teamUsers}">
+                                        <a href="#" class="x-admin-backlog-body" target="_blank">
+                                                <h3>团员姓名</h3>
+                                                <p><cite th:text="${teamUser.student.truename}">12</cite></p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="layui-card">
+                            <div class="layui-card-header">我的团队申请记录</div>
+                            <div class="layui-card-body ">
+                                <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                    <li class="layui-col-md2 layui-col-xs6" th:each="teamUser:${teamUserList}">
+                                        <a href="#" class="x-admin-backlog-body layui-row layui-col-space10" >
+                                            <div class="layui-col-xs6">
+                                                <h3>申请人姓名</h3>
+                                                <p><cite th:text="${teamUser.student.truename}">12</cite></p>
+                                            </div>
+                                            <div class="layui-col-xs6">
+                                                <button class="layui-btn layui-btn-normal"  th:onclick="tongyi([[${teamUser}]])">同意</button>
+                                                <button class="layui-btn layui-btn-normal"  th:onclick="jujue([[${teamUser}]])">拒绝</button>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!--拥有了团队-->
+                </div>
+        </div>
+    </body>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var Tongyi = /*[[@{/User/tongyi}]]*/;//获取动作地址
+        var baoming = /*[[@{/User/baomingTeam}]]*/;//获取动作地址
+        var teamAdd = /*[[@{/User/toTeamAdd}]]*/;//获取动作地址
+        /*]]>*/
+    function teambm(id) {
+        layer.confirm('是否报名', {icon: 3, title:'提示'}, function(index){
+            //do something
+            $.ajax({
+                async:false,//同步提交
+                url:baoming, //执行的动作地址
+                data:{id:id}, //传参数
+                success:function(msg){
+                    if(msg=='ok')//说明该验证码不对
+                    {
+                        layer.msg("成功")
+                        layer.close(index);
+                        window.parent.location.reload();//刷新父页面
+                    }else {
+                        layer.msg("失败")
+                        layer.close(index);
+                        window.parent.location.reload();//刷新父页面
+                    }
+                }
+            });
+        });
+    }
+    $("#creatTeam").click(function () {
+        xadmin.open('创建团队',teamAdd,500,400)
+    })
+    function tongyi(teamUser) {
+        layer.confirm('是否同意申请', {icon: 3, title:'提示'}, function(index){
+            //do something
+            $.ajax({
+                async:false,//同步提交
+                url:Tongyi, //执行的动作地址
+                data:{parm:JSON.stringify(teamUser)}, //传参数
+                success:function(msg){
+                    if(msg=='ok')//说明该验证码不对
+                    {
+                        layer.msg("同意成功")
+                        layer.close(index);
+                        window.parent.location.reload();//刷新父页面
+                    }else {
+                        layer.msg("失败")
+                        layer.close(index);
+                        window.parent.location.reload();//刷新父页面
+                    }
+                }
+            });
+        });
+    }
+    function jujue(teamUser) {
+        layer.confirm('是否拒绝', {icon: 3, title:'提示'}, function(index){
+            //do something
+            console.log(teamUser)
+            //layer.msg("申请成功团队id是:"+teamUser)
+            layer.close(index);
+            window.parent.location.reload();//刷新父页面
+        });
+    }
+    </script>
+</html>

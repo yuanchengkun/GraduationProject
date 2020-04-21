@@ -9,7 +9,7 @@
 <script type="text/javascript" th:src="@{/login/js/jquery1.42.min.js}"></script>
 <script type="text/javascript" th:src="@{/login/js/jquery.SuperSlide.js}"></script>
 <script type="text/javascript" th:src="@{/login/js/Validform_v5.3.2_min.js}"></script>
-<script type="text/javascript">
+<!--<script type="text/javascript">
 $(document).ready(function(){
 	var $tab_li = $('#tab ul li');
 	$tab_li.hover(function(){
@@ -18,7 +18,7 @@ $(document).ready(function(){
 		$('div.tab_box > div').eq(index).show().siblings().hide();
 	});	
 });
-</script>
+</script>-->
 <script th:inline="javascript">
     /*<![CDATA[*/
     var loginUrl = /*[[@{/users/login}]]*/;//获取动作地址
@@ -27,7 +27,7 @@ $(document).ready(function(){
     /*]]>*/
 $(function(){
 /*学生登录信息验证*/
-$("#stu_username_hide").focus(function(){
+/*$("#stu_username_hide").focus(function(){
  var username = $(this).val();
  if(username=='输入学号'){
  $(this).val('');
@@ -62,7 +62,7 @@ $("#stu_code_hide").focusout(function(){
  if(username==''){
  $(this).val('输入验证码');
  }
-});
+});*/
 $(".stu_login_error").Validform({
 	tiptype:function(msg,o,cssctl){
 		var objtip=$(".stu_error_box");
@@ -211,30 +211,30 @@ $(function(){
 
 <body>
 <div id="tab">
-  <ul class="tab_menu">
+  <!--<ul class="tab_menu">
     <li class="selected">学生登录</li>
     <li>导师登录</li>
     <li>教务登录</li>
-  </ul>
+  </ul>-->
   <div class="tab_box"> 
-    <!-- 学生登录开始 -->
+
     <div>
       <div class="stu_error_box"></div>
       <form th:action="@{/LoginAction/login}" method="post" class="stu_login_error">
         <div id="username">
-          <label>学&nbsp;&nbsp;&nbsp;号：</label>
-          <input type="text" id="stu_username_hide" name="username" value="输入学号" nullmsg="学号不能为空！" datatype="s6-18" errormsg="学号范围在6~18个字符之间！" sucmsg="学号验证通过！"/>
+          <label>用&nbsp;户&nbsp;名：</label>
+          <input type="text" id="stu_username_hide" name="username"   nullmsg="用户名不能为空！" datatype="s5-18" errormsg="用户名范围在5~18个字符之间！" sucmsg="用户名验证通过！"/>
           <!--ajaxurl="demo/valid.jsp"--> 
         </div>
         <div id="password">
           <label>密&nbsp;&nbsp;&nbsp;码：</label>
-          <input type="password" id="stu_password_hide" name="password" value="输入密码" nullmsg="密码不能为空！" datatype="*6-16" errormsg="密码范围在6~16位之间！" sucmsg="密码验证通过！"/>
+          <input type="password" id="stu_password_hide" name="password"  nullmsg="密码不能为空！" datatype="*6-16" errormsg="密码范围在6~16位之间！" sucmsg="密码验证通过！"/>
         </div>
 
 
         <div id="code">
           <label>验证码：</label>
-          <input type="text" id="stu_code_hide" name="validatecode"  value="输入验证码" nullmsg="验证码不能为空！" datatype="*4-4" errormsg="验证码有4位数！" sucmsg="验证码验证通过！"/>
+          <input type="text" id="stu_code_hide" name="validatecode"   nullmsg="验证码不能为空！" datatype="*4-4" errormsg="验证码有4位数！" sucmsg="验证码验证通过！"/>
           <img th:src="@{/LoginAction/defaultKaptcha}" alt="验证码" title="看不清楚，点击换一张"
                onclick="this.src='./defaultKaptcha?d='+new Date()*1"/>
         </div>
@@ -246,16 +246,14 @@ $(function(){
           <button type="submit">登录</button>
         </div>
       </form>
-    </div>
-   <!-- 学生登录结束-->
-   <!-- 导师登录开始-->
-    <div class="hide">
+    </div><!-- 学生登录 -->
+    <!--<div class="hide">
      <div class="tea_error_box"></div>
       <form action="" method="post" class="tea_login_error">
         <div id="username">
           <label>教工号：</label>
           <input type="text" id="tea_username_hide" name="username" value="输入教工号" nullmsg="教工号不能为空！" datatype="s6-18" errormsg="教工号范围在6~18个字符之间！" sucmsg="教工号验证通过！"/>
-          <!--ajaxurl="demo/valid.jsp"--> 
+          &lt;!&ndash;ajaxurl="demo/valid.jsp"&ndash;&gt;
         </div>
         <div id="password">
           <label>密&nbsp;&nbsp;&nbsp;码：</label>
@@ -263,8 +261,9 @@ $(function(){
         </div>
         <div id="code">
           <label>验证码：</label>
-          <input type="text" id="tea_code_hide" name="code"  value="输入验证码" nullmsg="验证码不能为空！" datatype="*4-4" errormsg="验证码有4位数！" sucmsg="验证码验证通过！"/>
-          <img src="images/captcha.jpg" title="点击更换" alt="验证码占位图"/> </div>
+          <input type="text" id="stu_code_hide" name="validatecode"  value="输入验证码" nullmsg="验证码不能为空！" datatype="*4-4" errormsg="验证码有4位数！" sucmsg="验证码验证通过！"/>
+          <img th:src="@{/LoginAction/defaultKaptcha}" alt="验证码" title="看不清楚，点击换一张"
+               onclick="this.src='./defaultKaptcha?d='+new Date()*1"/>
         <div id="remember">
           <input type="checkbox" name="remember">
           <label>记住密码</label>
@@ -273,16 +272,14 @@ $(function(){
           <button type="submit">登录</button>
         </div>
       </form>
-    </div>
-     <!-- 导师登录结束-->
-     <!-- 教务登录开始-->
+    </div>&lt;!&ndash; 导师登录结束&ndash;&gt;
     <div class="hide">
     <div class="sec_error_box"></div>
       <form th:action="@{/LoginAction/login}" method="post" class="sec_login_error">
         <div id="username">
           <label>教务号：</label>
           <input type="text" id="sec_username_hide" name="username" value="输入教务号" nullmsg="教务号不能为空！" datatype="s5-18" errormsg="教务号范围在5~18个字符之间！" sucmsg="教务号验证通过！"/>
-          <!--ajaxurl="demo/valid.jsp"--> 
+          &lt;!&ndash;ajaxurl="demo/valid.jsp"&ndash;&gt;
         </div>
         <div id="password">
           <label>密&nbsp;&nbsp;&nbsp;码：</label>
@@ -302,8 +299,8 @@ $(function(){
           <button type="submit">登录</button>
         </div>
       </form>
-    </div>
-     <!-- 教务登录结束-->
+    </div> -->
+
   </div>
 </div>
 <div class="bottom">©2020 Leting <a href="javascript:;" >关于</a> <span>蜀ICP备05006389号-1</span>  <a href="https://www.cuit.edu.cn/" target="_blank">成都信息工程大学</a></div>

@@ -16,6 +16,18 @@ public class Competition {
     @Transient
     private Competitiontype competitiontype;//内置竞赛种类对象
 
+    public Competitiontype getComtype() {
+        return comtype;
+    }
+
+    public void setComtype(Competitiontype comtype) {
+        this.comtype = comtype;
+    }
+
+    @JoinColumn(name = "comtpid", insertable = false, updatable = false)
+    @ManyToOne
+    private Competitiontype comtype;//团队
+
     public Competitiontype getCompetitiontype() {
         return competitiontype;
     }
@@ -66,6 +78,19 @@ public class Competition {
 
     public String getMiaosu() {
         return miaosu;
+    }
+
+    @Override
+    public String toString() {
+        return "Competition{" +
+                "comid=" + comid +
+                ", comtpid=" + comtpid +
+                ", starttime='" + starttime + '\'' +
+                ", endtime='" + endtime + '\'' +
+                ", comtime='" + comtime + '\'' +
+                ", miaosu='" + miaosu + '\'' +
+                ", competitiontype=" + competitiontype +
+                '}';
     }
 
     public void setMiaosu(String miaosu) {

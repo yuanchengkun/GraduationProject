@@ -23,6 +23,27 @@ public class Users {
     private Integer comid;/*学生报名的竞赛*/
     private Integer comtpid;/*老师指导的竞赛类型*/
 
+    @Override
+    public String toString() {
+        return "Users{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", truename='" + truename + '\'' +
+                ", type=" + type +
+                ", describe1='" + describe1 + '\'' +
+                ", createby='" + createby + '\'' +
+                ", createtime='" + createtime + '\'' +
+                ", state=" + state +
+                ", email='" + email + '\'' +
+                ", card=" + card +
+                ", teamid=" + teamid +
+                ", comid=" + comid +
+                ", comtpid=" + comtpid +
+                ", com=" + com +
+                '}';
+    }
+
     public Integer getComtpid() {
         return comtpid;
     }

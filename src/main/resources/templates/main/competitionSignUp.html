@@ -5,10 +5,11 @@
 		<meta name="X-UA-Compatible" content="IE=edge"/>
 		<meta name="keywords" content="秘书学系"/>
 		<meta name="description" content="XX大学秘书学系"/>
-		<title>秘书学系</title>
+		<title>竞赛报名</title>
 		<link rel="stylesheet" type="text/css" th:href="@{/main/css/style.css}"/>
 		<link rel="stylesheet" th:href="@{/res/layui/css/layui.css}">
 		<script th:src="@{/res/jquery/jquery-3.3.1.min.js}"></script>
+		<script th:src="@{/res/layer/layer.js}"></script>
 	</head>
 	<body>
 	<div th:insert="~{main/commons/header::hearder}"></div>
@@ -21,15 +22,15 @@
 		<div class="i_content">
 			<div class="adr_wrap">
 				<div class="adr">
-					<span class="adr_link"><a href="../index.html">首   页</a>&nbsp;&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;最新通知</span>
+					<span class="adr_link"><a href="../index.html">首   页</a>&nbsp;&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;竞赛报名</span>
 				</div>
 			</div>
 			<div class="c_area">
 				<div class="left_list">
-					<div class="nav_title">最新通知</div>
+					<div class="nav_title">竞赛报名</div>
 					<div class="sidemenu">
 						<ul>
-							<li class="on"><a href="">最新通知</a></li>
+							<li class="on" th:each="comTp:${session.comTp}"><a th:href="@{/User/signUp(id=${comTp.comtpid})}"><span th:text="${comTp.name}"></span></a></li>
 						</ul>
 					</div>
 					<div class="contact">
@@ -37,12 +38,15 @@
 					</div>
 				</div>
 				<div class="right_content">
-					<div class="con_title">最新通知</div>
+					<div class="con_title">竞赛报名</div>
 					<div class="con_box">
-						<ul class="news-list" id="all">
-							<li th:each="notice:${session.noticeList}">
-								<a th:href="@{/BaseAction/nDetail(id=${notice.notid})}" th:text="${notice.title}">消息名称消息名称消息名称消息名称</a><span class="date" th:text="${notice.sendtime}">2016-05-05</span>
-								<p ><span th:text="${notice.content}"></span><a th:href="@{/BaseAction/nDetail(id=${notice.notid})}" class="more">[查看更多]</a></p>
+						<ul class="img-list" id="all">
+							<li  th:each="competition:${competitionInTime}">
+								<p>竞赛种类：<span th:text="${competition.competitiontype.name}"></span></p>
+								<p>竞赛开始时间：<span th:text="${competition.comtime}"></span></p>
+								<p>竞赛报名时间：<span th:text="${competition.starttime}"></span>---><span th:text="${competition.endtime}"></span></p>
+								<p>竞赛描述：<span th:text="${competition.miaosu}"></span></p>
+								<button class="layui-btn layui-btn-normal" th:onclick="baoming([[${competition.comid}]])">现在开始报名</button>
 							</li>
 						</ul>
 						<div class="clear"></div>
@@ -115,7 +119,7 @@
 	<script>
         var zz=getzz()
         var pageno=1 ; //当前页
-        var pagesize=5; //每页多少条信息
+        var pagesize=2; //每页多少条信息
         if(zz.length%pagesize==0){
             var  pageall =zz.length/pagesize ;
         }else{
@@ -124,5 +128,28 @@
         change(1);
 	</script>
 	</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var Url = /*[[@{/User/baoming}]]*/;//获取动作地址
+    /*]]>*/
+    function baoming(id) {
 
+        $.ajax({
+            url:Url,
+            data:{comid:id},
+            async:false,
+            success:function(msg){
+                //layer.msg(resp);
+                if(msg=='ok')
+                {
+                    layer.msg("报名成功");
+                }else if(msg=='chongfu'){
+                    layer.msg("同时只能报名一个竞赛");
+				}else {
+                    layer.msg("报名失败");
+                }
+            }
+        })
+    }
+</script>
 </html>

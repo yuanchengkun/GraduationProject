@@ -1,6 +1,7 @@
 package com.edu.cuit.competition_management_system.service;
 
 import com.edu.cuit.competition_management_system.entity.Competitiontype;
+import com.edu.cuit.competition_management_system.entity.Users;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface ComTpService {
     public List<Competitiontype> findAllComTp();//查询所有竞赛类型
     public void saveComTp(Competitiontype competitiontype);//保存竞赛类型
     Page<Competitiontype> findPagercomTp(int currentPageNumber, int pageSize);//查询分页竞赛种类
+    List<Users> findAllTeaWithComTp(int comtpid);//查询该竞赛类型的所有指导老师
+
 }

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>添加竞赛信息</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+    <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
+    <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="cardRuleId" class="layui-form-label">
+                    <span class="x-red">*</span>指导老师</label>
+                <div class="layui-input-inline">
+                    <select name="teaid" id="cardRuleId" lay-filter="select" lay-verify="required">
+                        <option value="">请选择指导老师</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="comTime" class="layui-form-label">
+                    <span class="x-red">*</span>团队名称</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" autocomplete="off" lay-verify="required" placeholder="名称" name="teamname" id="comTime">
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label for="miaosu" class="layui-form-label">
+                    <span class="x-red"></span>团队介绍</label>
+                <div class="layui-input-inline">
+                    <textarea name="info" id="miaosu" placeholder="请输入" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var selectComtp = /*[[@{/AdminMember/selectComtp}]]*/;//获取动作地址
+    var selectTeacher = /*[[@{/User/selectTeacher}]]*/;//获取动作地址
+    /*]]>*/
+    //获取待选规则
+    layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
+        var selMaintenanceItem='<option value=\'\'>--请选择指导老师--</option>'
+        $.ajax({
+            url:selectTeacher,
+            type:"POST",
+            dataType:"json",
+            success:function(data){
+                if(data.data.length>0){
+                    $("#cardRuleId").empty();//清空下拉框
+                    for (k in data.data) {
+                        selMaintenanceItem += '<option value=' + data.data[k].id + '>' + data.data[k].truename + '</option>';
+                    }
+                }else {
+                    $("#cardRuleId").empty();//清空下拉框
+                    $("#cardRuleId").append("<option value=''>--请新建规则--</option>");
+                }
+                $("#cardRuleId").append(selMaintenanceItem)
+                form.render();//注意渲染页面表单，否则不显示数据
+            },
+            error: function() {
+                layer.msg('获取规则失败');
+                form.render();
+            }
+        });
+    })
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var update = /*[[@{/User/teamAdd}]]*/;//获取动作地址
+    /*]]>*/
+    layui.use(['form', 'layer', 'jquery'],
+    function () {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+
+        //监听提交
+        form.on('submit(add)',
+            function (data) {
+                $.ajax({
+                    url: update,
+                    data:{param:JSON.stringify(data.field)},
+                    async:true,
+                    success:function(msg){
+                        if(msg=="ok"){
+                            layer.alert("增加成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                            return;
+                        }else if(msg=="chongfu"){
+                            layer.msg('只能申请创建一个团队!');
+                        }
+                    }
+                })
+
+                return false;
+            });
+
+    });</script>
+</body>
+
+</html>

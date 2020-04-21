@@ -29,6 +29,18 @@ public class UserSignImpl implements UserSign {
         findUser.setUserComtp(id,comtpid);
     }
 
+    @Transactional
+    @Override
+    public boolean userBaoming(int userid, int comid) {
+        Users users = findUser.findById(userid).get();
+        if(users.getComid()==null){
+            findUser.setUserCom(userid,comid);
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     @Override
     public boolean checkUsernameIsExist(String username) {
         if(findUser.findByUsername(username)!=null)
@@ -76,7 +88,7 @@ public class UserSignImpl implements UserSign {
 
     @Transactional
     @Override
-    public void setUserCom(int id, int comid) {
+    public void setUserCom(int id, Integer comid) {
         findUser.setUserCom(id,comid);
     }
 }

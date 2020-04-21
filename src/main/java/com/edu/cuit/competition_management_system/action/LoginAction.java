@@ -142,7 +142,6 @@ public class LoginAction {
     public void sendValidateEmail(String toEmail,HttpSession session,HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
-
         String msg="";
         //随机生成一个四位的验证码，验证一般有数字和字母组合而成。
         String randomCode = RandomUtil.randomString(4);

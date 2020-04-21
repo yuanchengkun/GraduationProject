@@ -4,6 +4,7 @@ import com.edu.cuit.competition_management_system.dao.userdao.ComDao;
 import com.edu.cuit.competition_management_system.dao.userdao.ComTpDao;
 import com.edu.cuit.competition_management_system.entity.Competition;
 import com.edu.cuit.competition_management_system.entity.Competitiontype;
+import com.edu.cuit.competition_management_system.entity.Users;
 import com.edu.cuit.competition_management_system.service.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,4 +51,12 @@ public class CompetitionServiceImpl implements CompetitionService {
         Pageable pager = PageRequest.of(currentPageNumber,pageSize);
         return comDao.findAll(pager);
     }
+
+    @Override
+    public List<Competition> findAllComInTimeWithComtp(int comtpId) {
+        LocalDate today = LocalDate.now();
+        return comDao.findAllByComtpidAndEndtimeIsAfter(comtpId,today.toString());
+    }
+
+
 }

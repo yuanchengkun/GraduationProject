@@ -19,7 +19,7 @@ public class AdminAction {
         if(users!=null&&users.getType()==0){
             return "admin/index";
         }else
-            return "login";
+            return "redirect:/LoginAction/toLogin";
     }
     @RequestMapping("welcome")
     public String welcome(){

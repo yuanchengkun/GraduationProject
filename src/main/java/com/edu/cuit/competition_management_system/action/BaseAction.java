@@ -1,6 +1,7 @@
 package com.edu.cuit.competition_management_system.action;
 
 import com.edu.cuit.competition_management_system.entity.Notice;
+import com.edu.cuit.competition_management_system.service.ComTpService;
 import com.edu.cuit.competition_management_system.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,10 +23,13 @@ import java.util.Optional;
 public class BaseAction {
     @Autowired
     NoticeService noticeService;
+    @Autowired
+    ComTpService comTpService;
 
     @RequestMapping("index")
     public String index(HttpSession session){
         session.setAttribute("noticeListInFive",noticeService.findNoticeInFiveDay());
+        session.setAttribute("comTp",comTpService.findAllComTp());
         return "index";
     }
 

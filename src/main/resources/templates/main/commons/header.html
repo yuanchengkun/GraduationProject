@@ -30,17 +30,15 @@
                     <li class="nLi" style="display: none;"></li>
                     <li class="nLi">
                         <h3><a href="main/about.html">在线报名</a></h3>
-                        <ul class="sub">
-                            <li><a href="main/about.html">ACM中国</a></li>
-                            <li><a href="main/about.html">中国计算机学会</a></li>
-                            <li><a href="main/about.html">互动媒体工作室</a></li>
+                        <ul class="sub" >
+                            <li th:each="comTp:${session.comTp}"><a th:href="@{/User/signUp(id=${comTp.comtpid})}"><div th:text="${comTp.name}"></div></a></li>
                         </ul>
                     </li>
                     <li class="nLi">
                         <h3><a href="main/teachers.html">新闻公告</a></h3>
                         <ul class="sub">
                             <li><a href="main/teachers.html">综合新闻</a></li>
-                            <li><a href="main/technology.html">通知公告</a></li>
+                            <li><a th:href="@{/BaseAction/notice}">通知公告</a></li>
                             <li><a href="main/technology.html">获奖公告</a></li>
                         </ul>
                     </li>
@@ -53,11 +51,13 @@
                         </ul>
                     </li>
                     <li th:if="${session.loginUser!=null}" class="nLi">
-                        <h3>欢迎你<div th:text="${session.loginUser.truename}"></div></h3>
+                        <h3><a><img src="http://t.cn/RCzsdCq" class="layui-nav-img"></a></h3>
+<!--
+                        <h3>欢迎你<span th:text="${session.loginUser.truename}"></span></h3>
+-->
                         <ul class="sub">
-                            <li><a href="main/resource.html">技能类</a></li>
-                            <li><a href="main/resource.html">法文类</a></li>
-                            <li><a href="main/resource.html">其他</a></li>
+                            <li><a th:href="@{/User/mine}">个人中心</a></li>
+                            <li><a th:href="@{/User/mine}">修改密码</a></li>
                             <li><a th:href="@{/LoginAction/logout}">退出登录</a></li>
                         </ul>
                     </li>

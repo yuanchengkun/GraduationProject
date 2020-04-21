@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-X-admin2.2</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!--
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+-->
+        <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+        <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+        <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+        <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+        <script type="text/javascript" th:src="@{/res/jquery/jquery-3.3.1.min.js}"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12" >
+                    <div class="layui-card">
+                        <div class="layui-card-header">公开文档</div>
+                        <div class="layui-card-body ">
+                            <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                <li class="layui-col-md2 layui-col-xs6" th:each="file:${publicFile}">
+                                    <a th:onclick="downloadFile([[${file.fileid}]])" class="x-admin-backlog-body">
+                                        <h3 th:text="${file.filename}"></h3>
+                                        <p>上传人:<span th:text="${file.users.truename}"></span></p>
+                                        <p>上传时间:<span th:text="${file.uploaddate}"></span></p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!--公开文档-->
+                    <div class="layui-card">
+                        <div class="layui-card-header">组内文档</div>
+                        <div class="layui-card-body ">
+                            <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                <li class="layui-col-md2 layui-col-xs6" th:each="file:${teamFile}">
+                                    <a th:onclick="downloadFile([[${file.fileid}]])" class="x-admin-backlog-body">
+                                        <h3 th:text="${file.filename}"></h3>
+                                        <p>上传人:<span th:text="${file.users.truename}"></span></p>
+                                        <p>上传时间:<span th:text="${file.uploaddate}"></span></p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!--组内文档-->
+                </div><!--我能阅读的文档-->
+                <div class="layui-col-md12" >
+                    <div class="layui-card">
+                        <div class="layui-card-header">以下是你上传的文件
+                            <button class="layui-btn layui-btn-normal" style="float: right" id="upload">上传文件</button>
+                        </div>
+                        <div class="layui-card-body ">
+                            <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                <li class="layui-col-md2 layui-col-xs6" th:each="file:${personFile}">
+                                    <a  class="x-admin-backlog-body layui-row layui-col-space10" target="_blank">
+                                        <div class="layui-col-xs8">
+                                            <h3 th:text="${file.filename}"></h3>
+                                            <p>上传人:<span th:text="${file.users.truename}"></span></p>
+                                            <p>上传时间:<span th:text="${file.uploaddate}"></span></p>
+                                        </div>
+                                        <div class="layui-col-xs4">
+                                            <div class="layui-row">
+                                                <button class="layui-btn layui-btn-normal" th:onclick="downloadFile([[${file.fileid}]])">下载文件</button>
+                                            </div>
+                                            <div class="layui-row">
+                                                <button class="layui-btn layui-btn-normal" th:onclick="deleteFile([[${file.fileid}]])">删除文件</button>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><!--我上传的文档-->
+            </div>
+        </div>
+    </body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var deleteUrl = /*[[@{/File/deleteFile}]]*/;//获取动作地址
+    var downloadUrl = /*[[@{/File/fileDownload}]]*/;//获取动作地址
+    var uploadUrl = /*[[@{/File/uploadFile}]]*/;//获取动作地址
+    /*]]>*/
+    /*$("#quxiaobaoming").click(function(){
+        layer.confirm('是否取消', {icon: 3, title:'提示'}, function(index){
+            //do something
+            $.ajax({
+                async:false,//同步提交
+                url:quxiaobaoming, //执行的动作地址
+                success:function(msg){
+                    if(msg=='ok')//说明该验证码不对
+                    {
+                        layer.msg("取消成功")
+                        layer.close(index);
+                        window.parent.location.reload();//刷新父页面
+                    }else if(msg='team'){
+                        layer.msg("取消失败，请先退出竞赛团队")
+                        layer.close(index);
+                        window.parent.location.reload();//刷新父页面
+                    }
+                }
+            });
+        });
+    })*/
+    function downloadFile(id) {
+        layer.confirm('是否下载文件', {icon: 3, title:'提示'}, function(index){
+            var urlStr1 =downloadUrl;
+            //form提交下载
+            var form = $('<form></form>');
+            form.attr('style', 'display:none');
+            form.attr('target', '_blank');
+            form.attr('method', 'post'); //form提交路径      
+            form.attr('action', urlStr1)
+            var input = $('<input type="text" name="fileId" id="fileId" />'); // 可以添加一些参数
+            input.attr('value', id);
+            form.append(input);
+            $(document.body).append(form);
+            form.submit();      
+            layer.close(index);
+        })
+    }
+    function deleteFile(id) {
+        layer.confirm('是否删除文件', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                async:false,//同步提交
+                url:deleteUrl, //执行的动作地址
+                data:{fileId:id},
+                success:function(statueCode){
+                    if(statueCode=='1')//说明该验证码不对
+                    {
+                        layer.msg('删除成功',{icon:1,time:1000},function(){
+                            layer.close(index);
+                            location.reload();
+                        });
+
+                    }else {
+                        layer.msg('删除失败',{icon:1,time:1000},function(){
+                            layer.close(index);
+                            location.reload();
+                        });
+                    }
+                }
+            });
+        })
+    }
+    layui.use('upload', function(){
+        var upload = layui.upload;
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#upload' //绑定元素
+            ,url: uploadUrl //上传接口
+            ,accept: 'file'
+            ,size:10240
+            ,done: function(res){
+                //上传完毕回调
+                layer.msg('上传成功',{icon:1,time:1000},function(){
+                    location.reload();
+                });
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+    });
+</script>
+</html>

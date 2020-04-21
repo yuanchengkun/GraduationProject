@@ -26,5 +26,7 @@ public interface FindUser extends JpaRepository <Users,Integer>{
     void setUserCom(int id, int comid); //通过用户id修改用户选择的竞赛id
     @Modifying
     @Query("update Users u set u.comtpid = ?2 where u.id = ?1")
-    void setUserComtp(int id, int comtpid); //通过用户id修改用户选择的竞赛id
+    void setUserComtp(int id, Integer comtpid); //通过用户id修改用户选择的竞赛id
+
+    List<Users> findAllByComtpid(int comtpid);//根据指导的竞赛类型查找老师
 }
