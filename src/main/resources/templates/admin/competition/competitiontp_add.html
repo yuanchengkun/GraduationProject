@@ -22,12 +22,63 @@
     <div class="layui-row">
         <form class="layui-form">
             <div class="layui-form-item">
-                <label for="cardRuleId" class="layui-form-label">
-                    <span class="x-red">*</span>竞赛种类</label>
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>竞赛种类
+                </label>
                 <div class="layui-input-inline">
                     <div class="layui-input-inline">
-                        <input class="layui-input" autocomplete="off" placeholder="请输入竞赛种类名称" name="name" id="cardRuleId">
+                        <input class="layui-input" autocomplete="off" placeholder="请输入竞赛种类名称" name="name" lay-verify="required">
                     </div>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>主办方
+                </label>
+                <div class="layui-input-inline">
+                    <div class="layui-input-inline">
+                        <input class="layui-input" autocomplete="off" placeholder="请输入主办方名称" name="comorganizer" lay-verify="required">
+                    </div>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>竞赛级别
+                </label>
+                <div class="layui-input-inline">
+                    <div class="layui-input-inline">
+                        <select name="comlevel">
+                            <option value="国家级学科竞赛">国家级学科竞赛</option>
+                            <option value="省级学科竞赛">省级学科竞赛</option>
+                            <option value="校级学科竞赛">校级学科竞赛</option>
+                        </select>                    </div>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label  class="layui-form-label">
+                    <span class="x-red">*</span>竞赛档次
+                </label>
+                <div class="layui-input-inline">
+                    <div class="layui-input-inline">
+                        <select name="comclass"  >
+                            <option value="第一档次">第一档次</option>
+                            <option value="第二档次">第二档次</option>
+                            <option value="第三档次">第三档次</option>
+                            <option value="第四档次">第四档次</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span ></span>
                 </div>
             </div>
             <div class="layui-form-item">

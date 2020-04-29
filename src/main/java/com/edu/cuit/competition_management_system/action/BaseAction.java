@@ -1,15 +1,21 @@
 package com.edu.cuit.competition_management_system.action;
 
+import com.edu.cuit.competition_management_system.dao.userdao.ComDao;
+import com.edu.cuit.competition_management_system.entity.Competition;
 import com.edu.cuit.competition_management_system.entity.Notice;
 import com.edu.cuit.competition_management_system.service.ComTpService;
 import com.edu.cuit.competition_management_system.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,11 +31,19 @@ public class BaseAction {
     NoticeService noticeService;
     @Autowired
     ComTpService comTpService;
+    @Autowired
+    ComDao comDao;
 
     @RequestMapping("index")
     public String index(HttpSession session){
+        LocalDate today = LocalDate.now();
+        int page = 0,size = 6;
+        Pageable pager = PageRequest.of(page,size);
+        Page<Competition> competitions = comDao.findAllByEndtimeIsAfter(today.toString(),pager);
+        List<Competition> competitionList = competitions.getContent();
         session.setAttribute("noticeListInFive",noticeService.findNoticeInFiveDay());
         session.setAttribute("comTp",comTpService.findAllComTp());
+        session.setAttribute("competitions",competitionList);
         return "index";
     }
 

@@ -28,13 +28,14 @@
                         <div class="layui-card-body ">
                             <form class="layui-form layui-col-space5">
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input class="layui-input" autocomplete="off" placeholder="真实姓名查询" name="truename" id="truename">
+                                    <input class="layui-input" autocomplete="off" placeholder="团队名查询" name="teamname" id="teamname">
                                 </div>
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input class="layui-input" autocomplete="off" placeholder="职工号查询" name="card" id="card">
+                                    <input class="layui-input" autocomplete="off" placeholder="团队指导老师查询" name="teachername" id="teachername">
                                 </div>
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" name="username" placeholder="用户名查询" autocomplete="off" class="layui-input"></div>
+                                    <input type="text"  placeholder="团队队长查询" autocomplete="off" class="layui-input" name="captain" id="captain">
+                                </div>
                                 <div class="layui-inline layui-show-xs-block">
                                     <button class="layui-btn" lay-submit="" lay-filter="sreach">
                                         <i class="layui-icon">&#xe615;</i>
@@ -219,29 +220,26 @@
                             $.ajax({
                                 url: deleteAll,
                                 data:{param:JSON.stringify(data)},
-                                async:false,//同步提交
+                                async:true,
+                                dataType:'json',
                                 success:function(msg){
                                     if(msg=='ok')
                                     {
-                                        layer.msg('删除成功',{icon:1,time:1000},function(){
-                                            layer.close(index);
-                                            location.reload();
-                                        });
+                                        layer.msg("成功")
+                                        layer.close(index);
+                                        window.parent.location.reload();//刷新父页面
                                     }else {
-                                        layer.msg('删除失败',{icon:1,time:1000},function(){
-                                            layer.close(index);
-                                            location.reload();
-                                        });
+                                        layer.msg("失败")
+                                        layer.close(index);
+                                        window.parent.location.reload();//刷新父页面
                                     }
                                 }
                             })
-
                         });
                         break;
                 }
                 ;
             });
-
 
     });
     </script>

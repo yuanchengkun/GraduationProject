@@ -247,8 +247,9 @@ public class LoginAction {
             msg="error";
             out.print(msg);
         }
-
-
-
+    }
+    @RequestMapping("resetPassWord")
+    public String resetPassWord(){
+        return "resetPassWord";
     }
 }

@@ -28,13 +28,13 @@
                 <div class="layui-card-body ">
                     <form class="layui-form layui-col-space5">
                         <div class="layui-inline layui-show-xs-block">
-                            <input class="layui-input" autocomplete="off" placeholder="开始日" name="start" id="start">
+                            <input class="layui-input" autocomplete="off" placeholder="真实姓名查询" name="truename" id="truename">
                         </div>
                         <div class="layui-inline layui-show-xs-block">
-                            <input class="layui-input" autocomplete="off" placeholder="截止日" name="end" id="end">
+                            <input class="layui-input" autocomplete="off" placeholder="职工号查询" name="card" id="card">
                         </div>
                         <div class="layui-inline layui-show-xs-block">
-                            <input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input"></div>
+                            <input type="text" name="username" placeholder="用户名查询" autocomplete="off" class="layui-input"></div>
                         <div class="layui-inline layui-show-xs-block">
                             <button class="layui-btn" lay-submit="" lay-filter="sreach">
                                 <i class="layui-icon">&#xe615;</i>
@@ -77,7 +77,7 @@
 </body>
 <script type="text/html" id="toolbarDemo">
     <div class = "layui-btn-container" >
-        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn layui-btn-danger" lay-event="delete"><i class="layui-icon"></i>批量删除</button>
         <button class="layui-btn" onclick="xadmin.open('添加指导老师','./memberAdd',600,400)"><i class="layui-icon"></i>手动添加</button>
     </div >
 </script>
@@ -180,7 +180,7 @@
     })
 </script>
 
-<script>
+<!--<script>
     layui.use('laydate',
     function() {
         var laydate = layui.laydate;
@@ -196,12 +196,13 @@
         });
 
     });
-</script>
+</script>-->
 <script th:inline="javascript">
     /*<![CDATA[*/
     var deleteUrl = /*[[@{/AdminMember/setUserState}]]*/;//获取动作地址
     var resetPwUrl = /*[[@{/AdminMember/resetPw}]]*/;//获取动作地址
     var update = /*[[@{/AdminMember/update}]]*/;//获取动作地址
+    var deleteAll = /*[[@{/AdminMember/deleteAll}]]*/;//获取动作地址
     /*]]>*/
     layui.use('table', function() {
         var table = layui.table;
@@ -231,18 +232,33 @@
         //头工具栏事件
         table.on('toolbar(tabTitle)',
             function(obj) {
+                console.log(obj);
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
-                    case 'getCheckData':
+                    case 'delete':
                         var data = checkStatus.data;
-                        layer.alert(JSON.stringify(data));
-                        break;
-                    case 'getCheckLength':
-                        var data = checkStatus.data;
-                        layer.msg('选中了：' + data.length + ' 个');
-                        break;
-                    case 'isAll':
-                        layer.msg(checkStatus.isAll ? '全选': '未全选');
+                        layer.confirm('确认要删除选中的' + data.length + ' 个数据吗', {icon: 3, title:'提示'}, function(index){
+                            //发异步删除数据
+                            $.ajax({
+                                url: deleteAll,
+                                data:{param:JSON.stringify(data)},
+                                async:false,//同步提交
+                                success:function(msg){
+                                    if(msg=='ok')
+                                    {
+                                        layer.msg('删除成功',{icon:1,time:1000},function(){
+                                            layer.close(index);
+                                            location.reload();
+                                        });
+                                    }else {
+                                        layer.msg('删除失败',{icon:1,time:1000},function(){
+                                            layer.close(index);
+                                            location.reload();
+                                        });
+                                    }
+                                }
+                            })
+                        });
                         break;
                 }
                 ;

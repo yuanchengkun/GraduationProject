@@ -29,13 +29,13 @@
                 <ul id="nav" class="nav clearfix">
                     <li class="nLi" style="display: none;"></li>
                     <li class="nLi">
-                        <h3><a href="main/about.html">在线报名</a></h3>
+                        <h3><a href="#">在线报名</a></h3>
                         <ul class="sub" >
                             <li th:each="comTp:${session.comTp}"><a th:href="@{/User/signUp(id=${comTp.comtpid})}"><div th:text="${comTp.name}"></div></a></li>
                         </ul>
                     </li>
                     <li class="nLi">
-                        <h3><a href="main/teachers.html">新闻公告</a></h3>
+                        <h3><a href="#">新闻公告</a></h3>
                         <ul class="sub">
                             <li><a href="main/teachers.html">综合新闻</a></li>
                             <li><a th:href="@{/BaseAction/notice}">通知公告</a></li>
@@ -43,7 +43,7 @@
                         </ul>
                     </li>
                     <li class="nLi">
-                        <h3><a href="main/study.html">在线学习</a></h3>
+                        <h3><a href="#">在线学习</a></h3>
                         <ul class="sub">
                             <li><a href="main/study.html">学习成果</a></li>
                             <li><a href="main/study.html">文档学习</a></li>

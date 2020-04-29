@@ -36,7 +36,7 @@
     <script type="text/html" id="toolbarDemo">
         <div class = "layui-btn-container" >
             <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-            <button class="layui-btn"  lay-submit="" onclick="xadmin.open('新增竞赛种类','./competitiontpAdd',400,300)"><i class="layui-icon"></i>增加</button>
+            <button class="layui-btn"  lay-submit="" onclick="xadmin.open('新增竞赛种类','./competitiontpAdd',500,300)"><i class="layui-icon"></i>增加</button>
             <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
                 <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
             </button>
@@ -47,12 +47,66 @@
             <i class="layui-icon">&#xe640;</i>
         </a>
     </script>
+    <script type="text/html" id="comclass">
+        <select name="comclass" lay-filter="classSelect" data-value="{{d.comclass}}">
+            <option value="第一档次">第一档次</option>
+            <option value="第二档次">第二档次</option>
+            <option value="第三档次">第三档次</option>
+            <option value="第四档次">第四档次</option>
+        </select>
+    </script>
+    <script type="text/html" id="comlevel">
+        <select name="comlevel" lay-filter="levelSelect" data-value="{{d.comlevel}}">
+            <option value="国家级学科竞赛">国家级学科竞赛</option>
+            <option value="省级学科竞赛">省级学科竞赛</option>
+            <option value="校级学科竞赛">校级学科竞赛</option>
+        </select>
+    </script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         var Url = /*[[@{/AdminCompetition/pageComtp}]]*/;//获取动作地址
+        var updatetp = /*[[@{/AdminCompetition/updatetp}]]*/;//获取动作地址
         /*]]>*/
         //表格初始化
         layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
+            // 监听修改update到表格中
+            form.on('select(classSelect)', function (data) {
+                var elem = $(data.elem);
+                var id = elem.parents('tr').first().find('td').eq(1).text();//当前用户id
+                var param ={"comtpid":id,"comclass":data.value};
+                $.ajax({
+                    url: updatetp,
+                    data:{param:JSON.stringify(param)},
+                    async:true,
+                    success:function(msg){
+                        if(msg=="ok"){
+                            layer.msg('修改成功');
+                            return;
+                        }else {
+                            layer.msg('修改失败!',{icon:1,time:1000});
+                        }
+                    }
+                })
+            });
+            form.on('select(levelSelect)', function (data) {
+                var elem = $(data.elem);
+                var id = elem.parents('tr').first().find('td').eq(1).text();//当前用户id
+                var param ={"comtpid":id,"comlevel":data.value};
+                console.log($(data.elem).parent().parent().parent())
+                $.ajax({
+                    url: updatetp,
+                    data:{param:JSON.stringify(param)},
+                    async:true,
+                    success:function(msg){
+                        if(msg=="ok"){
+                            layer.msg('修改成功');
+                            return;
+                        }else {
+                            layer.msg('修改失败!',{icon:1,time:1000});
+                        }
+                    }
+                })
+            });
             var table = layui.table;
             //执行渲染初始化表格
             table.render({
@@ -64,11 +118,22 @@
                 ,limits:[5,10,15,20]
                 ,method: 'post'
                 ,toolbar: '#toolbarDemo'
+                ,done: function (res, curr, count) {
+                    count || this.elem.next('.layui-table-view').find('.layui-table-header').css('overflow', 'auto');
+                    layui.each($('select'), function (index, item) {
+                        var elem = $(item);
+                        elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+                    });
+                    form.render();
+                }
                 ,cols:  [
                     [ //标题栏
                         {checkbox: true}
                         ,{field: 'comtpid', title: 'ID', width: 60,sort: true}
                         ,{field: 'name', title: '种类名称', minWidth: 120}
+                        ,{field: 'comclass',templet: '#comclass', title: '竞赛档次',minWidth: 120}
+                        ,{field: 'comlevel',templet: '#comlevel', title: '竞赛级别', minWidth: 120}
+                        ,{field: 'comorganizer', edit: 'text',title: '主办单位', minWidth: 120}
                         ,{field:'caozuo',toolbar: '#barDemo',title:'操作'}
                     ]
                 ]
@@ -88,5 +153,31 @@
                 layer.msg('已删除!',{icon:1,time:1000});
             });
         }
+        layui.use('table', function() {
+            var table = layui.table;
+            //监听单元格编辑
+            table.on('edit(tabTitle)',
+                function (obj) {
+                    var value = obj.value //得到修改后的值
+                        ,
+                        data = obj.data //得到所在行所有键值
+                        ,
+                        field = obj.field; //得到字段
+                    $.ajax({
+                        url: updatetp,
+                        data: {param: JSON.stringify(data)},
+                        async: true,
+                        success: function (msg) {
+                            if (msg == "ok") {
+                                layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
+                                return;
+                            } else {
+                                layer.msg('修改失败!', {icon: 1, time: 1000});
+                            }
+                        }
+                    })
+                });
+        })
+
     </script>
 </html>

@@ -35,6 +35,8 @@ public class UserAction {
     @Autowired
     UserSign userSign;
     @Autowired
+    FindUser findUser;
+    @Autowired
     ComTpService comTpService;
     @Autowired
     TeamUserDao teamUserDao;
@@ -144,6 +146,7 @@ public class UserAction {
     @RequestMapping("team")
     public String team(HttpSession session,HttpServletRequest request){
         Users users = (Users)session.getAttribute("loginUser");
+        users = findUser.findById(users.getId()).get();
         if(users.getTeamid()==null){//当前没有参加团队
             if(users.getComid()==null){//当前还没有报名竞赛
 

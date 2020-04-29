@@ -1,6 +1,8 @@
 package com.edu.cuit.competition_management_system.action;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.edu.cuit.competition_management_system.dao.userdao.FindUser;
 import com.edu.cuit.competition_management_system.entity.Competition;
@@ -21,6 +23,7 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.Max;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +49,11 @@ public class AdminMemberAction {
     @RequestMapping("member_list1")
     public String member_list1(){
         return "admin/member/member_stu";
+    }
+
+    @RequestMapping("member_team")
+    public String member_tean(){
+        return "admin/member/member_team";
     }
     @RequestMapping("member_del")
     public String member_del(){
@@ -245,5 +253,18 @@ public class AdminMemberAction {
         Tablejson tb = new Tablejson();
         tb.setData(comTpService.findAllComTp());
         return tb.getDate();
+    }
+    @ResponseBody
+    @RequestMapping("deleteAll")
+    public String deleteAll(String param){
+        ArrayList<Users> userList  = JSON.parseObject(param, new TypeReference<ArrayList<Users>>(){});
+        String msg="";
+        try {
+            userSign.setUserState(userList,0);
+            msg="ok";
+        }catch (Exception e){
+            msg="error";
+        }
+        return msg;
     }
 }

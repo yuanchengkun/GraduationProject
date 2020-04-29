@@ -2,6 +2,7 @@ package com.edu.cuit.competition_management_system.service;
 
 import com.edu.cuit.competition_management_system.entity.Users;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,5 +20,6 @@ public interface UserSign {
     public void setUserCom(int id,Integer comid);//根据用户id修改用户选择的竞赛
     public void setUserComtp(int id,int comtpid);//根据用户id修改老师指导的竞赛类型
     public boolean userBaoming(int userid,int comid);//用户报名
+    public void setUserState(ArrayList<Users> userList,int state);//修改用户状态
     //public List<Users> findTeatherWhthcom();//通过竞赛查询该类型的指导老师
 }

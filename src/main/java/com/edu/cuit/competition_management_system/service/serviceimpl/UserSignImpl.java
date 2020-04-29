@@ -21,7 +21,7 @@ public class UserSignImpl implements UserSign {
     ComDao comDao;
     @Override
     public Users userSign(String username, String password) {
-        return findUser.findByUsernameAndPassword(username,password);
+        return findUser.findByUsernameAndPasswordAndState(username,password,1);
     }
     @Transactional
     @Override
@@ -38,6 +38,13 @@ public class UserSignImpl implements UserSign {
             return true;
         }else {
             return false;
+        }
+    }
+    @Transactional
+    @Override
+    public void setUserState(ArrayList<Users> userList, int state) {
+        for(Users users:userList){
+            findUser.setUserDelete(state,users.getId());
         }
     }
 

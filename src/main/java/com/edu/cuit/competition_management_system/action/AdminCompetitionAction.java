@@ -11,12 +11,17 @@ import com.edu.cuit.competition_management_system.json.LayuiTable;
 import com.edu.cuit.competition_management_system.json.Tablejson;
 import com.edu.cuit.competition_management_system.service.ComTpService;
 import com.edu.cuit.competition_management_system.service.CompetitionService;
+import com.edu.cuit.competition_management_system.util.FileUploadUtils;
+import com.edu.cuit.competition_management_system.util.UpdateTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,6 +41,8 @@ public class AdminCompetitionAction {
     ComTpService comTpService;
     @Autowired
     ComTpDao comTpDao;
+    @Autowired
+    ComDao comDao;
 
     @RequestMapping("competitionlist")
     public String competitionList(){
@@ -58,6 +65,10 @@ public class AdminCompetitionAction {
         String msg="";
         Competition competition = JSON.parseObject(param, new TypeReference<Competition>() {});
         try {
+            if(competition.getComid()!=null){
+                Competition source = comDao.findById(competition.getComid()).get();
+                UpdateTool.copyNullProperties(source,competition);
+            }
             competitionService.save(competition);
             msg="ok";
             out.print(msg);
@@ -88,10 +99,16 @@ public class AdminCompetitionAction {
         String msg="";
         Competitiontype competitiontype = JSON.parseObject(param, new TypeReference<Competitiontype>() {});
         try {
+
+            if(competitiontype.getComtpid()!=null){
+                Competitiontype source = comTpDao.findById(competitiontype.getComtpid()).get();
+                UpdateTool.copyNullProperties(source,competitiontype);
+            }
             comTpService.saveComTp(competitiontype);
             msg="ok";
             out.print(msg);
         } catch (Exception e) {
+            System.out.println(e);
             msg="error1";
             out.print(msg);
         }
@@ -136,5 +153,37 @@ public class AdminCompetitionAction {
         layuiTable.setCount(pager.getTotalElements());
         layuiTable.setData(competitions);
         return layuiTable;
+    }
+    @RequestMapping("uploadPic")
+    @ResponseBody
+    public LayuiTable uploadCarsPicture(MultipartFile file)throws IllegalStateException, IOException{
+        LayuiTable layuiTable = new LayuiTable();
+        System.out.println("开始上传...");
+        String msg="";
+        String path =ResourceUtils.getURL("classpath:").getPath();
+        path=path+"/"+"static/"+"competitionPic";
+        //MyResponse resp = new MyResponse();
+
+        try{
+            String uploadSuccessFileName = FileUploadUtils.uploadFile(file,path);
+
+            //resp.success(uploadSuccessFileName);
+            msg=uploadSuccessFileName;
+            layuiTable.setCode(1);
+            layuiTable.setMsg(msg);
+            return layuiTable;
+        }
+        catch(Exception ex){
+            layuiTable.setCode(0);
+            ex.printStackTrace();
+            msg="error";
+            layuiTable.setMsg(msg);
+            return layuiTable;
+        }
+    }
+    @RequestMapping("editPic")
+    public String editPic(int id, HttpServletRequest request){
+        request.setAttribute("id",id);
+        return "admin/competition/competitionPic_edit";
     }
 }

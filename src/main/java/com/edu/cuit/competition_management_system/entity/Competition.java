@@ -13,6 +13,17 @@ public class Competition {
     private String endtime;//竞赛报名结束时间
     private String comtime;//竞赛开始时间
     private String miaosu;//竞赛描述
+    private String pic;//宣传图片
+    private String comsrc;//介绍连接
+
+    public String getComsrc() {
+        return comsrc;
+    }
+
+    public void setComsrc(String comsrc) {
+        this.comsrc = comsrc;
+    }
+
     @Transient
     private Competitiontype competitiontype;//内置竞赛种类对象
 
@@ -26,7 +37,7 @@ public class Competition {
 
     @JoinColumn(name = "comtpid", insertable = false, updatable = false)
     @ManyToOne
-    private Competitiontype comtype;//团队
+    private Competitiontype comtype;
 
     public Competitiontype getCompetitiontype() {
         return competitiontype;
@@ -95,5 +106,13 @@ public class Competition {
 
     public void setMiaosu(String miaosu) {
         this.miaosu = miaosu;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
     }
 }

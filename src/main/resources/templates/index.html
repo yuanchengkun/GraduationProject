@@ -95,24 +95,25 @@
 		<div class="content">
 			<div class="left_tab">
 				<div class="hd">
-					<ul><li class="first">综合新闻</li><li class="second">获奖公开</li><li class="third">团队活动</li></ul>
+					<ul><li class="first">竞赛宣传</li><li class="second">团队宣传</li><li class="third">团队活动</li></ul>
 				</div>
 				<div class="bd">
 					<div class="box">
 						<a href="main/about1.html" class="more">MORE+</a>
 						<ul class="clearfix">
-							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a1.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
-							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a2.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
-							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a3.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
-							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a4.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
-							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a5.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
-							<li><a th:href="@{/main/about1.html}"><img th:src="@{/main/images/a6.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li th:each="competition:${session.competitions}">
+								<a th:href="${competition.comsrc}" target="_blank">
+									<img th:src="@{/competitionPic/{filename}(filename=${competition.pic})}">
+									<h4 th:text="${competition.miaosu}">标题名称标题名称标题名称标题名称标题名称</h4>
+									<p>竞赛种类：<span class="date" th:text="${competition.comtype.name}">2016-05-05</span></p>
+								</a>
+							</li>
 						</ul>
 					</div>
 					<div class="box">
 						<a href="main/secret.html" class="more">MORE+</a>
 						<ul class="clearfix">
-							<li><a href="main/secret.html"><img th:src="@{/main/images/s1.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
+							<li><a href="main/secret.html"><img th:src="@{/competitionPic/8345a49ae2ce4a6fb2aadf3c4a674191QQ浏览器截图20200302161830.png}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
 							<li><a href="main/secret.html"><img th:src="@{/main/images/s2.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
 							<li><a href="main/secret.html"><img th:src="@{/main/images/s3.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>
 							<li><a href="main/secret.html"><img th:src="@{/main/images/s4.jpg}" /><h4>标题名称标题名称标题名称标题名称标题名称</h4><span class="date">2016-05-05</span></a></li>

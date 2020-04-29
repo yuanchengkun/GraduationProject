@@ -60,9 +60,8 @@
                             <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
                                 <li class="layui-col-md2 layui-col-xs6" th:each="tea:${teaList}">
                                     <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3 th:text="${tea.truename}"></h3>
-                                        <p>联系方式
-                                            <cite th:text="${tea.email}"></cite></p>
+                                        <p>老师姓名：<cite th:text="${tea.truename}"></cite></p>
+                                        <p>联系方式：<cite th:text="${tea.email}"></cite></p>
                                     </a>
                                 </li>
                             </ul>

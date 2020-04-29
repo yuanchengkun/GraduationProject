@@ -127,6 +127,9 @@ public class Team {
 
     private String info;//团队介绍
     private String teamname;//团队名字
+    @Column(name = "state", columnDefinition = "int", insertable = false, updatable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private TeamState teamState;
     private Integer state;//团队状态
 
 

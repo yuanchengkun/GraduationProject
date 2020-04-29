@@ -60,7 +60,7 @@ public class TeacherAction {
 
     /**
      * 同意创建团队
-     * @param param
+     * @param parm
      * @param response
      * @param session
      * @throws IOException

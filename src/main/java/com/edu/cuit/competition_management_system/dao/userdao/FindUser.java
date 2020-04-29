@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface FindUser extends JpaRepository <Users,Integer>{
-    Users findByUsernameAndPassword(String username,String password);
+    Users findByUsernameAndPasswordAndState(String username,String password,Integer state);
 
     Users findByUsername(String username);
 

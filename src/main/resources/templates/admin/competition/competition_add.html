@@ -15,6 +15,19 @@
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+        .layui-input-block {
+            position: relative;
+        }
+
+        .word {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            color: #aaa;
+            font-size: 12px;
+        }
+    </style>
 </head>
 
 <body>
@@ -54,10 +67,22 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label for="demo1" class="layui-form-label">
+                    <button type="button" class="layui-btn" id="test1">上传宣传图片</button>
+                </label>
+                <div class="layui-input-inline">
+                    <img class="layui-upload-img" id="demo1">
+                    <p id="demoText"><input type="hidden" id="pic" name="pic"/></p>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
                 <label for="miaosu" class="layui-form-label">
                     <span class="x-red">*</span>竞赛描述</label>
-                <div class="layui-input-inline">
-                    <textarea name="miaosu" id="miaosu" placeholder="请输入" class="layui-textarea"></textarea>
+                <div class="layui-input-block">
+                    <textarea name="miaosu" id="miaosu" placeholder="请输入" class="layui-textarea" oninput="wordLeg(this);" maxlength="20" onpropertychange="if(value.length>20) value=value.substr(0,20)" >
+                    </textarea>
+                    <div class="word"><span class="text_count">0</span> / <span class="num_count" id="numCount">20</span></div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -68,6 +93,54 @@
     </div>
 </div>
 <script th:inline="javascript">
+    /*<![CDATA[*/
+    var picUrl = /*[[@{/AdminCompetition/uploadPic}]]*/;//取值
+
+    /*]]>*/
+    layui.use('upload', function() {
+        var $ = layui.jquery
+            , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+            , url: picUrl //改成您自己的上传接口
+            //,accept:"file" //这个 file作为参数提交给服务器，非常重要。file封装上传的文件对象。
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                console.log(res)
+                //如果上传失败
+                if (res.code == 0) {
+                    return layer.msg('上传失败');
+                }
+                var fileName = res.msg;
+                $("#pic").attr('value', fileName);
+                //上传成功
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+    });
+    window.wordLeg = function (obj) {
+        var currleg = $(obj).val().length;
+        var length = $(obj).attr('maxlength');
+        if (currleg > length) {
+            layer.msg('字数请在' + length + '字以内');
+        } else {
+            $('.text_count').text(currleg);
+        }
+    }
     /*<![CDATA[*/
     var selectComtp = /*[[@{/AdminMember/selectComtp}]]*/;//获取动作地址
     /*]]>*/

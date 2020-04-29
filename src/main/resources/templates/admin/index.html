@@ -21,7 +21,7 @@
         <![endif]-->
         <script>
             // 是否开启刷新记忆tab功能
-            var is_remember = false;
+            //var is_remember = false;
         </script>
     </head>
     <body class="index">
@@ -32,11 +32,11 @@
             <div class="left_open">
                 <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
             </div>
-            <ul class="layui-nav left fast-add" lay-filter="">
+           <!-- <ul class="layui-nav left fast-add" lay-filter="">
                 <li class="layui-nav-item">
                     <a href="javascript:;">窗口实例演示</a>
                     <dl class="layui-nav-child">
-                        <!-- 二级菜单 -->
+                        &lt;!&ndash; 二级菜单 &ndash;&gt;
                         <dd>
                             <a onclick="xadmin.open('最大化','../BaseAction/index','','',true)">
                                 <i class="iconfont">&#xe6a2;</i>弹出最大化</a></dd>
@@ -54,13 +54,19 @@
                                 <i class="iconfont">&#xe6b8;</i>在tab打开刷新</a></dd>
                     </dl>
                 </li>
-            </ul>
+            </ul>-->
             <ul class="layui-nav right" lay-filter="">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">欢迎你管理员</a>
+                    <a href="javascript:;">欢迎你：<span th:text="${session.loginUser.truename}"></span></a>
                     <dl class="layui-nav-child">
                         <!-- 二级菜单 -->
                         <dd><a th:href="@{/LoginAction/logout}">退出</a></dd>
+                        <dd>
+                            <a onclick="resetPassWord()">
+                                <i class="iconfont">&#xe6b8;</i>修改密码
+                            </a>
+                        </dd>
+
                     </dl>
                 </li>
                 <li class="layui-nav-item to-index">
@@ -90,7 +96,7 @@
                                     <cite>学生列表</cite></a>
                             </li>
                             <li>
-                                <a onclick="xadmin.add_tab('老师列表','../AdminMember/member_list1',true)">
+                                <a onclick="xadmin.add_tab('团队列表','../AdminMember/member_team',true)">
                                     <i class="iconfont">&#xe6a7;</i>
                                     <cite>团队列表</cite></a>
                             </li>
@@ -217,5 +223,15 @@
         <!-- 右侧主体结束 -->
         <!-- 中部结束 -->
     </body>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var resetPassword = /*[[@{/LoginAction/resetPassWord}]]*/;//获取动作地址
+        var selectCom = /*[[@{/AdminMember/selectCom}]]*/;//获取动作地址
+        var updateCOm = /*[[@{/AdminMember/updateCOm}]]*/;//获取动作地址
+        /*]]>*/
+        function resetPassWord() {
 
+            xadmin.open('弹出自动宽高',resetPassword);
+        }
+    </script>
 </html>
