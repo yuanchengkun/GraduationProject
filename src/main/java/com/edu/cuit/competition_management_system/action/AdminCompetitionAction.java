@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.edu.cuit.competition_management_system.dao.userdao.ComDao;
 import com.edu.cuit.competition_management_system.dao.userdao.ComTpDao;
-import com.edu.cuit.competition_management_system.dao.userdao.FindUser;
 import com.edu.cuit.competition_management_system.entity.Competition;
 import com.edu.cuit.competition_management_system.entity.Competitiontype;
 import com.edu.cuit.competition_management_system.json.LayuiTable;
-import com.edu.cuit.competition_management_system.json.Tablejson;
 import com.edu.cuit.competition_management_system.service.ComTpService;
 import com.edu.cuit.competition_management_system.service.CompetitionService;
 import com.edu.cuit.competition_management_system.util.FileUploadUtils;
@@ -154,36 +152,14 @@ public class AdminCompetitionAction {
         layuiTable.setData(competitions);
         return layuiTable;
     }
-    @RequestMapping("uploadPic")
-    @ResponseBody
-    public LayuiTable uploadCarsPicture(MultipartFile file)throws IllegalStateException, IOException{
-        LayuiTable layuiTable = new LayuiTable();
-        System.out.println("开始上传...");
-        String msg="";
-        String path =ResourceUtils.getURL("classpath:").getPath();
-        path=path+"/"+"static/"+"competitionPic";
-        //MyResponse resp = new MyResponse();
 
-        try{
-            String uploadSuccessFileName = FileUploadUtils.uploadFile(file,path);
-
-            //resp.success(uploadSuccessFileName);
-            msg=uploadSuccessFileName;
-            layuiTable.setCode(1);
-            layuiTable.setMsg(msg);
-            return layuiTable;
-        }
-        catch(Exception ex){
-            layuiTable.setCode(0);
-            ex.printStackTrace();
-            msg="error";
-            layuiTable.setMsg(msg);
-            return layuiTable;
-        }
-    }
     @RequestMapping("editPic")
     public String editPic(int id, HttpServletRequest request){
         request.setAttribute("id",id);
         return "admin/competition/competitionPic_edit";
+    }
+    @RequestMapping("competitionbmlist")
+    public String tocompetitionbmlist(){
+        return "admin/competition/competitionbm_list";
     }
 }

@@ -91,10 +91,11 @@
                             <input type="text" maxlength="4" class="txt03 f-r3 f-fl required" tabindex="4" style="width:167px" id="randCode" data-valid="isNonEmpty" data-error="验证码不能为空" /> 
                             <span class="ie8 icon-close close hide"></span>
                             <label class="f-size12 c-999 f-fl f-pl10">
-                            	<img th:src="@{/reg/images/yzm.jpg}" />
+                                <img th:src="@{/LoginAction/defaultKaptcha}" alt="验证码" title="看不清楚，点击换一张" id="yzmcode"
+                                     onclick="this.src='./defaultKaptcha?d='+new Date()*1"/>
                             </label>                        
                             <label class="icon-sucessfill blank hide" style="left:380px"></label>
-                            <label class="focusa">看不清？<a href="javascript:;" class="c-blue">换一张</a></label>   
+                            <label class="focusa" for="yzmcode">看不清？换一张</label>
                             <label class="focus valid" style="left:370px"></label>                        
                         </div>
                     </div>
@@ -199,22 +200,30 @@ $(function(){
 	$("#btn_part1").click(function(){
 	    //判断用户名是否重复
         var flag = true; //默认你输入的用户名是能用的。假设。
+        var mmm ="";
         if(!verifyCheck._click()) return;
         var un=$("#username").val();
+        var code = $("#randCode").val();
         $.ajax({
             async:false,//同步提交
             url:Url1, //执行的动作地址
-            data:{username:un}, //传参数
+            data:{username:un,code:code}, //传参数
             success:function(msg){
                 if(msg=='username_error')//说明该用户名不可用
                 {
                     flag = false;
+                    mmm="该用户名已被占用"
+                }
+                if(msg=='code_error')//说明该用户名不可用
+                {
+                    flag = false;
+                    mmm='验证码错误';
                 }
             }
         });
         if(!flag){
             flag=true;
-            layer.msg('该用户名已被占用');
+            layer.msg(mmm);
             return false;
         }
 

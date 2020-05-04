@@ -37,7 +37,7 @@
                                     <button class="layui-btn" lay-submit="" lay-filter="sreach">
                                         <i class="layui-icon">&#xe615;</i>
                                     </button>
-                                    <button class="layui-btn" lay-submit="" lay-filter="sreach" onclick="location.reload()" title="刷新">
+                                    <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
                                         <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
                                     </button>
                                 </div>
@@ -55,21 +55,21 @@
     </body>
     <script type="text/html" id="toolbarDemo">
         <div class = "layui-btn-container" >
-            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+            <button class="layui-btn layui-btn-danger" lay-event="delete"><i class="layui-icon"></i>批量删除</button>
             <button class="layui-btn"  lay-submit="" onclick="xadmin.open('新增通知','./noticeAdd',600,500)"><i class="layui-icon"></i>增加</button>
-            <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
-                <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
-            </button>
+
         </div >
     </script>
     <script type="text/html" id="barDemo">
-        <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
+        <a title="删除" onclick="member_del(this,{{d.notid}})" href="javascript:;">
             <i class="layui-icon">&#xe640;</i>
         </a>
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         var Url = /*[[@{/AdminNotice/findNoticeAll}]]*/;//获取动作地址
+        var deleteUrl = /*[[@{/AdminNotice/deleteNotice}]]*/;//获取动作地址
+        var updateUrl = /*[[@{/AdminNotice/updateNotice}]]*/;//获取动作地址
         /*]]>*/
         layui.use('laydate',
             function() {
@@ -103,27 +103,101 @@
                     [ //标题栏
                         {checkbox: true}
                         ,{field: 'notid', title: 'ID', width: 60,sort: true}
-                        ,{field: 'title', title: '标题', width: 200,sort: true}
-                        ,{field: 'username', title: '发布人', width: 100,sort: true}
+                        ,{field: 'title', title: '标题', width: 200,edit: 'text'}
+                        ,{field: 'username', title: '发布人', width: 100}
                         ,{field: 'sendtime', title: '发布时间', width: 100,sort: true}
-                        ,{field: 'content', title: '内容', width: 564}
-                        ,{field:'caozuo',toolbar: '#barDemo',title:'操作',width:60}
+                        ,{field: 'content', title: '内容', minwidth: 200,edit: 'text'}
+                        ,{field:'caozuo',toolbar: '#barDemo',title:'操作',width:100}
                     ]
                 ]
             });
         })
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var update = /*[[@{/AdminNotice/updataNotice}]]*/;//获取动作地址
+        var deleteAll = /*[[@{/AdminNotice/deleteAll}]]*/;//获取动作地址
+        /*]]>*/
+        layui.use('table', function() {
+            var table = layui.table;
+            //监听单元格编辑
+            table.on('edit(tabTitle)',
+                function(obj) {
+                    var value = obj.value //得到修改后的值
+                        ,
+                        data = obj.data //得到所在行所有键值
+                        ,
+                        field = obj.field; //得到字段
+                    $.ajax({
+                        url: update,
+                        data:{param:JSON.stringify(data)},
+                        async:true,
+                        success:function(msg){
+                            if(msg=="ok"){
+                                layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
+                                return;
+                            }else {
+                                layer.msg('修改失败!',{icon:1,time:1000});
+                            }
+                        }
+                    })
+                });
 
+            //头工具栏事件
+            table.on('toolbar(tabTitle)',
+                function(obj) {
+                    var checkStatus = table.checkStatus(obj.config.id);
+                    switch (obj.event) {
+                        case 'delete':
+                            var data = checkStatus.data;
+                            layer.confirm('确认要删除选中的' + data.length + ' 个数据吗', {icon: 3, title:'提示'}, function(index){
+                                //发异步删除数据
+                                $.ajax({
+                                    url: deleteAll,
+                                    data:{param:JSON.stringify(data)},
+                                    async:false,//同步提交
+                                    success:function(msg){
+                                        if(msg=='ok')
+                                        {
+                                            layer.msg('删除成功',{icon:1,time:1000},function(){
+                                                layer.close(index);
+                                                location.reload();
+                                            });
+                                        }else {
+                                            layer.msg('删除失败',{icon:1,time:1000},function(){
+                                                layer.close(index);
+                                                location.reload();
+                                            });
+                                        }
+                                    }
+                                })
+
+                            });
+                            break;
+                    }
+                    ;
+                });
+        });
     </script>
     <script>
-
-
-
-        /*用户-删除*/
+        /*资料-删除*/
         function member_del(obj,id){
             layer.confirm('确认要删除吗？',function(index){
                 //发异步删除数据
-                $(obj).parents("tr").remove();
-                layer.msg('已删除!',{icon:1,time:1000});
+                $.ajax({
+                    url: deleteUrl,
+                    data:{id:id},
+                    async:true,
+                    success:function(msg){
+                        if(msg=="error"){
+                            layer.msg('删除失败!',{icon:1,time:1000});
+                        }else {
+                            $(obj).parents("tr").remove();
+                            layer.msg('已删除!',{icon:1,time:1000});
+                        }
+                    }
+                })
+
             });
         }
     </script>

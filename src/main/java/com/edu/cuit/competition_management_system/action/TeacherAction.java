@@ -51,7 +51,7 @@ public class TeacherAction {
     @RequestMapping("team")
     public String team(HttpSession session,HttpServletRequest request){
         Users users = (Users)session.getAttribute("loginUser");
-        List<Team> teamList = teamDao.findAllByTeaidAndState(users.getId(),1);
+        List<Team> teamList  = teamDao.findAllByTeaidAndState(users.getId(),1);
         List<Team> teamList2 = teamDao.findAllByTeaidAndState(users.getId(),2);
         request.setAttribute("teamList",teamList);
         request.setAttribute("teamList2",teamList2);

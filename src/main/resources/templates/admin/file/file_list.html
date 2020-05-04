@@ -28,13 +28,14 @@
                         <div class="layui-card-body ">
                             <form class="layui-form layui-col-space5">
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input class="layui-input" autocomplete="off" placeholder="真实姓名查询" name="truename" id="truename">
+                                    <input class="layui-input" autocomplete="off" placeholder="团队资料查询" name="teamname" id="teamname">
                                 </div>
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input class="layui-input" autocomplete="off" placeholder="职工号查询" name="card" id="card">
+                                    <input class="layui-input" autocomplete="off" placeholder="上传人查询" name="truename" id="truename">
                                 </div>
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" name="username" placeholder="用户名查询" autocomplete="off" class="layui-input"></div>
+                                    <input type="text"  placeholder="文件名查询" autocomplete="off" class="layui-input" name="filename" id="filename">
+                                </div>
                                 <div class="layui-inline layui-show-xs-block">
                                     <button class="layui-btn" lay-submit="" lay-filter="sreach">
                                         <i class="layui-icon">&#xe615;</i>
@@ -53,21 +54,19 @@
             </div>
         </div>
     </body>
-    <script type="text/html" id="toolbarDemo">
-        <div class = "layui-btn-container" >
-            <button class="layui-btn layui-btn-danger" lay-event="delete"><i class="layui-icon"></i>批量删除</button>
-            <button class="layui-btn " lay-filter="bmstu" lay-submit="">已经报名了的学生</button>
 
-            <!--
-                        <button class="layui-btn" onclick="xadmin.open('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>
-            -->
-        </div >
+    <script type="text/html" id="stateclass">
+        <select name="filelimit" lay-filter="stateSelect" data-value="{{d.filelimit}}">
+            <option value="0">个人文档</option>
+            <option value="1">团队文档</option>
+            <option value="2">公开文档</option>
+        </select>
     </script>
     <script type="text/html" id="barDemo">
-        <a onclick="resetPW({{d.id}})" title="重置密码" href="javascript:;">
+        <a onclick="downloadFile({{d.fileid}})" title="下载" href="javascript:;">
             <i class="layui-icon">&#xe631;</i>
         </a>
-        <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
+        <a title="删除" onclick="deleteFile({{d.fileid}})" href="javascript:;">
             <i class="layui-icon">&#xe640;</i>
         </a>
         <!-- 这里同样支持 laytpl 语法，如： -->
@@ -77,22 +76,18 @@
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        var Url = /*[[@{/AdminMember/pageUser}]]*/;//获取动作地址
-        var selectCom = /*[[@{/AdminMember/selectCom}]]*/;//获取动作地址
-        var updateCOm = /*[[@{/AdminMember/updateCOm}]]*/;//获取动作地址
-        var baominStu = /*[[@{/AdminMember/baominStu}]]*/;//获取动作地址
-
-
+        var Url = /*[[@{/AdminFile/pageFile}]]*/;//获取动作地址
+        var update = /*[[@{/AdminFile/updateFile}]]*/;//获取动作地址
         /*]]>*/
         layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
-
-            // 监听修改update到表格中
-            form.on('select(testSelect)', function (data) {
+                // 监听修改下拉选框到表格中
+            form.on('select(stateSelect)', function (data) {
                 var elem = $(data.elem);
                 var id = elem.parents('tr').first().find('td').eq(1).text();//当前用户id
+                var param ={"fileid":id,"filelimit":data.value};
                 $.ajax({
-                    url: updateCOm,
-                    data:{comid:data.value,id:id},
+                    url: update,
+                    data:{param:JSON.stringify(param)},
                     async:true,
                     success:function(msg){
                         if(msg=="ok"){
@@ -103,8 +98,8 @@
                         }
                     }
                 })
-
             });
+
 
             var table = layui.table;
         //执行渲染初始化表格
@@ -118,79 +113,46 @@
                 ,method: 'post'
                 ,toolbar: '#toolbarDemo'
                 ,done: function (res, curr, count) {
-                        count || this.elem.next('.layui-table-view').find('.layui-table-header').css('overflow', 'auto');
-                        layui.each($('select'), function (index, item) {
-                            var elem = $(item);
-                            elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
-                        });
-                        form.render();
+                    count || this.elem.next('.layui-table-view').find('.layui-table-header').css('overflow', 'auto');
+                    layui.each($('select'), function (index, item) {
+                        var elem = $(item);
+                        elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+                    });
+                    form.render();
                 }
-                ,where: {type: 1}
                 ,cols:  [
                     [ //标题栏
                         {checkbox: true}
-                        ,{field: 'id', title: 'ID', width: 80,sort: true}
-                        ,{field: 'username', title: '用户名', width: 120}
-                        ,{field:'email', edit: 'text', minWidth: 100,title:'邮箱'}
-                        ,{field:'createtime', width:100,title:'创建时间'}
-                        ,{field:'card', edit: 'text', Width: 80,title:'学号'}
-                        ,{field:'truename', edit: 'text', minWidth: 80,title:'真实姓名'}
-                        ,
-                        {
-                            field:'d.com.name',  Width: 80,title:'报名的竞赛',
-                            templet: function (d) {
-                                // 模板的实现方式也是多种多样，这里简单返回固定的
-                                var selMaintenanceItem = '<select name="city" lay-filter="testSelect" lay-verify="required" data-value="' + d.comid + '" >'
-
-                                $.ajax({
-                                    url: selectCom,
-                                    type: 'post',
-                                    async: false,
-                                    dataType:"json",
-                                    success: function (data) {
-                                        for (k in data.data) {
-                                            selMaintenanceItem += '<option value=' + data.data[k].comid + '>' + data.data[k].competitiontype.name + '</option>';
-                                        }
-                                        selMaintenanceItem
-                                            += '</select>';
-                                    }
-                                });
-                                return selMaintenanceItem;
+                        ,{field: 'fileid', title: 'ID', width: 80,sort: true}
+                        ,{field: 'filename', edit: 'text',title: '文件名', minwidth: 150}
+                        ,{field:'uploaddate', minwidth:100,title:'上传时间'
+                         }
+                         ,{field:'', width:200,title:'文档公开',templet:"#stateclass"
+                         }
+                        ,{field: '',  width: 80, title: '上传人'
+                            , templet: function (d) {
+                                return d.users.truename;
                             }
-                        }
-                        ,{field:'caozuo',toolbar: '#barDemo',title:'操作'}
+                         },{field: '',  width: 80, title: '所属小组'
+                            , templet: function (d) {
+                             if(d.team!=null)
+                                return d.team.teamname;
+                             else return null;
+                            }
+                         }
+                        ,{field:'caozuo',toolbar: '#barDemo',title:'操作',  width: 80}
                     ]
                 ]
-            });
-            form.on('submit(bmstu)', function(data){
-                /*var formData = data.field;
-                var name = formData.name,
-                    url=formData.url,
-                    icon=formData.icon,
-                    parent_id=formData.parent_id;*/
-                //执行重载
-                console.log("表格重载")
-
-                table.reload('tabTitle', {
-                    url: baominStu
-                    ,page: {
-                        curr: 1 //重新从第 1 页开始
-                    }
-                    ,where: {
-                        id:'123'
-                    }
-
-                }, 'data');
-                return false;//false：阻止表单跳转  true：表单跳转
             });
         })
     </script>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        var update = /*[[@{/AdminMember/update}]]*/;//获取动作地址
+
         var deleteAll = /*[[@{/AdminMember/deleteAll}]]*/;//获取动作地址
         /*]]>*/
+        //初始化时间组件
         layui.use('laydate',
         function() {
             var laydate = layui.laydate;
@@ -244,87 +206,78 @@
                             $.ajax({
                                 url: deleteAll,
                                 data:{param:JSON.stringify(data)},
-                                async:false,//同步提交
+                                async:true,
+                                dataType:'json',
                                 success:function(msg){
                                     if(msg=='ok')
                                     {
-                                        layer.msg('删除成功',{icon:1,time:1000},function(){
-                                            layer.close(index);
-                                            location.reload();
-                                        });
+                                        layer.msg("成功")
+                                        layer.close(index);
+                                        window.parent.location.reload();//刷新父页面
                                     }else {
-                                        layer.msg('删除失败',{icon:1,time:1000},function(){
-                                            layer.close(index);
-                                            location.reload();
-                                        });
+                                        layer.msg("失败")
+                                        layer.close(index);
+                                        window.parent.location.reload();//刷新父页面
                                     }
                                 }
                             })
-
                         });
                         break;
                 }
                 ;
             });
 
-
     });
     </script>
     <script th:inline="javascript">
 
         /*<![CDATA[*/
-        var deleteUrl = /*[[@{/AdminMember/setUserState}]]*/;//获取动作地址
-        var resetPwUrl = /*[[@{/AdminMember/resetPw}]]*/;//获取动作地址
+        var deleteUrl = /*[[@{/File/deleteFile}]]*/;//获取动作地址
+        var downloadUrl = /*[[@{/File/fileDownload}]]*/;//获取动作地址
         /*]]>*/
 
-        /*用户-删除*/
-        function member_del(obj,id){
-            var flag = true;
-            layer.confirm('确认要删除吗?', {icon: 3, title:'提示'}, function(index){
-                //发异步删除数据
+        /*文件-删除*/
+        function deleteFile(id) {
+            layer.confirm('是否删除文件', {icon: 3, title:'提示'}, function(index){
                 $.ajax({
-                    url: deleteUrl,
-                    data:{id:id,state:0},
-                    async:true,
-                    dataType:'json',
-                    success:function(msg){
-                        if(msg=="error"){
-                           flag=false;
+                    async:false,//同步提交
+                    url:deleteUrl, //执行的动作地址
+                    data:{fileId:id},
+                    success:function(statueCode){
+                        if(statueCode=='1')//说明该验证码不对
+                        {
+                            layer.msg('删除成功',{icon:1,time:1000},function(){
+                                layer.close(index);
+                                location.reload();
+                            });
+
+                        }else {
+                            layer.msg('删除失败',{icon:1,time:1000},function(){
+                                layer.close(index);
+                                location.reload();
+                            });
                         }
                     }
-                })
-                if(flag==true){
-                $(obj).parents("tr").remove();
-                layer.msg('已删除!',{icon:1,time:1000});
-                }else {
-                    layer.msg('删除失败!',{icon:1,time:1000});
-                }
-                layer.close(index);
-            });
+                });
+            })
         }
-        //重置用户密码
-        function resetPW(id) {
-            var flag = true;
-            layer.confirm('确认要重置密码为”000000“吗?', {icon: 3, title:'提示'}, function(index){
-                //发异步删除数据
-                $.ajax({
-                    url: resetPwUrl,
-                    data:{id:id},
-                    async:true,
-                    dataType:'json',
-                    success:function(msg){
-                        if(msg=="error"){
-                            flag=false;
-                        }
-                    }
-                })
-                if(flag==true){
-                    layer.msg('重置成功!',{icon:1,time:1000});
-                }else {
-                    layer.msg('重置失败!',{icon:1,time:1000});
-                }
+        //下载文件
+        function downloadFile(id) {
+            layer.confirm('是否下载文件', {icon: 3, title:'提示'}, function(index){
+                var urlStr1 =downloadUrl;
+                //form提交下载
+                var form = $('<form></form>');
+                form.attr('style', 'display:none');
+                /*form.attr('target', '_blank');*/
+                form.attr('method', 'post'); //form提交路径      
+                form.attr('action', urlStr1)
+                var input = $('<input type="text" name="fileId" id="fileId" />'); // 可以添加一些参数
+                input.attr('value', id);
+                form.append(input);
+                $(document.body).append(form);
+                form.submit();
                 layer.close(index);
-            });
+            })
         }
     </script>
 </html>

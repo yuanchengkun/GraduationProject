@@ -20,7 +20,17 @@ public class FileUpload {
     @JoinColumn(name = "teamid",insertable = false, updatable = false)
     @ManyToOne
     private Team team;
-    private Integer teamid;//共享的小组id 空表示完全共享
+    private Integer teamid;//共享的小组id
+
+    private Integer filelimit;//文档公开权限 0个人文档 1组内公开 2公开文档
+
+    public Integer getFilelimit() {
+        return filelimit;
+    }
+
+    public void setFilelimit(Integer filelimit) {
+        this.filelimit = filelimit;
+    }
 
     public Integer getFileid() {
         return fileid;

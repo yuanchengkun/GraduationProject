@@ -186,19 +186,24 @@ public class LoginAction {
      * @throws IOException
      */
     @RequestMapping("checkUsername")
-    public void checkUsername(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public void checkUsername(HttpServletRequest request, HttpServletResponse response,HttpSession session) throws IOException{
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
         String username = request.getParameter("username");
+        String code = request.getParameter("code");
+        String verifyCode = (String) session.getAttribute("vrifyCode");//session中保存的验证码
         String msg="";
-        if(!userSign.checkUsernameIsExist(username)) {
-            msg="username_ok";
-            out.print(msg);
+        if(verifyCode.equals(code)){
+            if(!userSign.checkUsernameIsExist(username)) {
+                msg="ok";
+            }
+            else {
+                msg="username_error";
+            }
+        }else {
+            msg = "code_error";
         }
-        else {
-            msg="username_error";
-            out.print(msg);
-        }
+        out.print(msg);
     }
 
     /**

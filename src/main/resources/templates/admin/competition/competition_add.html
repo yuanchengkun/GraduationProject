@@ -94,8 +94,7 @@
 </div>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var picUrl = /*[[@{/AdminCompetition/uploadPic}]]*/;//取值
-
+    var picUrl = /*[[@{/File/uploadPic}]]*/;//取值
     /*]]>*/
     layui.use('upload', function() {
         var $ = layui.jquery
@@ -105,6 +104,7 @@
         var uploadInst = upload.render({
             elem: '#test1'
             , url: picUrl //改成您自己的上传接口
+            ,data:{classPic:"competitionPic"}
             //,accept:"file" //这个 file作为参数提交给服务器，非常重要。file封装上传的文件对象。
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8

@@ -4,21 +4,32 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.edu.cuit.competition_management_system.dao.userdao.ComDao;
 import com.edu.cuit.competition_management_system.dao.userdao.FindUser;
+import com.edu.cuit.competition_management_system.dao.userdao.TeamDao;
+import com.edu.cuit.competition_management_system.dao.userdao.TeamUserDao;
 import com.edu.cuit.competition_management_system.entity.Competition;
+import com.edu.cuit.competition_management_system.entity.Team;
+import com.edu.cuit.competition_management_system.entity.TeamUser;
 import com.edu.cuit.competition_management_system.entity.Users;
 import com.edu.cuit.competition_management_system.json.LayuiTable;
 import com.edu.cuit.competition_management_system.json.Tablejson;
 import com.edu.cuit.competition_management_system.service.ComTpService;
 import com.edu.cuit.competition_management_system.service.CompetitionService;
 import com.edu.cuit.competition_management_system.service.UserSign;
+import com.edu.cuit.competition_management_system.util.FileUploadUtils;
+import com.edu.cuit.competition_management_system.util.UpdateTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.validation.constraints.Max;
 import java.io.IOException;
@@ -41,6 +52,12 @@ public class AdminMemberAction {
     ComTpService comTpService;
     @Autowired
     FindUser findUser;
+    @Autowired
+    TeamDao teamDao;
+    @Autowired
+    ComDao comDao;
+    @Autowired
+    TeamUserDao teamUserDao;
 
     @RequestMapping("member_list")
     public String member_list(){
@@ -266,5 +283,99 @@ public class AdminMemberAction {
             msg="error";
         }
         return msg;
+    }
+
+    /**
+     * 分页查询已经报了名的学生列表
+     * @param page
+     * @param limit
+     * @param type
+     * @return
+     */
+    @RequestMapping("baominStu")
+    @ResponseBody
+    public LayuiTable baominStu(String page,String limit,int type){
+        LayuiTable layuiTable = new LayuiTable();
+        Pageable pager = PageRequest.of(Integer.parseInt(page)-1,Integer.parseInt(limit));
+        Page<Users> pagerlist = findUser.findAllByComidNotNullAndType(type,pager);
+        List<Users> usersList = pagerlist.getContent();
+        layuiTable.setCode(0);
+        layuiTable.setMsg("ok");
+        layuiTable.setCount(pagerlist.getTotalElements());
+        layuiTable.setData(usersList);
+
+        return layuiTable;
+    }
+
+    @RequestMapping("pageTeam")
+    @ResponseBody
+    public LayuiTable pageTeam(String page,String limit){
+        LayuiTable layuiTable = new LayuiTable();
+        Pageable pager = PageRequest.of(Integer.parseInt(page)-1,Integer.parseInt(limit));
+        Page<Team> pagerlist = teamDao.findAll(pager);
+        List<Team> usersList = pagerlist.getContent();
+        layuiTable.setCode(0);
+        layuiTable.setMsg("ok");
+        layuiTable.setCount(pagerlist.getTotalElements());
+        layuiTable.setData(usersList);
+
+        return layuiTable;
+    }
+    @ResponseBody
+    @RequestMapping("selectTeacher")
+    public LayuiTable selectTeacher(int comid){
+        LayuiTable layuiTable = new LayuiTable();
+        Competition competition = comDao.findById(comid).get();
+        //查到所有指导该竞赛类型的老师
+        List<Users> tea = comTpService.findAllTeaWithComTp(competition.getComtpid());
+        layuiTable.setData(tea);
+        return layuiTable;
+    }
+    @RequestMapping("updateTeam")
+    @ResponseBody
+    public String updateTeam(String param){
+        String msg="";
+        Team team = JSON.parseObject(param, new TypeReference<Team>() {});
+        try{
+            if(team.getTeamid()!=null){
+                Team source = teamDao.findById(team.getTeamid()).get();
+                UpdateTool.copyNullProperties(source,team);
+            }
+            teamDao.save(team);
+            msg="ok";
+        }catch (Exception e){
+            msg="error";
+            System.out.println(e.getMessage());
+        }
+        return msg;
+    }
+    @RequestMapping("deleteTeam")
+    @ResponseBody
+    public String deleteTeam(int teamid){
+        String msg = "";
+        try{
+            teamDao.deleteById(teamid);
+            msg="ok";
+        }catch (Exception e){
+            msg="error";
+            System.out.println(e.getMessage());
+        }
+        return msg;
+    }
+    @RequestMapping("forwardTeam")
+    public String forwardTeam(int id, HttpServletRequest request){
+        request.setAttribute("id",id);
+        return "admin/member/teamusert";
+    }
+    @RequestMapping("teamuser")
+    @ResponseBody
+    public LayuiTable teamuser(int id){
+        List<TeamUser> teamUserList = teamUserDao.findAllByTeamid(id);
+        LayuiTable layuiTable = new LayuiTable();
+        layuiTable.setCode(0);
+        layuiTable.setMsg("");
+        layuiTable.setCount((long)teamUserList.size());
+        layuiTable.setData(teamUserList);
+        return layuiTable;
     }
 }

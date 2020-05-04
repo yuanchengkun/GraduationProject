@@ -22,6 +22,15 @@ public class Team {
     private Users teacher;//指导老师对象
 
     private Integer teaid;
+    private String pic;
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
 
     @Override
     public String toString() {
@@ -132,5 +141,11 @@ public class Team {
     private TeamState teamState;
     private Integer state;//团队状态
 
+    public TeamState getTeamState() {
+        return teamState;
+    }
 
+    public void setTeamState(TeamState teamState) {
+        this.teamState = teamState;
+    }
 }

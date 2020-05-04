@@ -4,6 +4,7 @@ import com.edu.cuit.competition_management_system.dao.userdao.FileDao;
 import com.edu.cuit.competition_management_system.entity.FileUpload;
 import com.edu.cuit.competition_management_system.entity.Users;
 import com.edu.cuit.competition_management_system.json.LayuiTable;
+import com.edu.cuit.competition_management_system.util.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
@@ -164,4 +165,37 @@ public class FileAction {
         }
 
     }
+
+    /**
+     * 上传图片
+     * @param file
+     * @param classPic 图片分类文件夹名
+     * @return
+     * @throws IllegalStateException
+     * @throws IOException
+     */
+    @RequestMapping("uploadPic")
+    @ResponseBody
+    public LayuiTable uploadCarsPicture(MultipartFile file,String classPic)throws IllegalStateException, IOException{
+        LayuiTable layuiTable = new LayuiTable();
+        String msg="";
+        String path =ResourceUtils.getURL("classpath:").getPath();
+        path=path+"/"+"static/"+classPic;
+
+        try{
+            String uploadSuccessFileName = FileUploadUtils.uploadFile(file,path);
+            msg=uploadSuccessFileName;
+            layuiTable.setCode(1);
+            layuiTable.setMsg(msg);
+            return layuiTable;
+        }
+        catch(Exception ex){
+            layuiTable.setCode(0);
+            ex.printStackTrace();
+            msg="error";
+            layuiTable.setMsg(msg);
+            return layuiTable;
+        }
+    }
+
 }

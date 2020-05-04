@@ -22,9 +22,22 @@
             <div class="layui-row layui-col-space15">
                 <div class="layui-col-md12">
                     <div class="layui-card">
-
                         <div class="layui-card-body ">
-
+                            <form class="layui-form layui-col-space5">
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input class="layui-input" autocomplete="off" placeholder="竞赛种类" name="teamname" id="teamname">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                        <i class="layui-icon">&#xe615;</i>
+                                    </button>
+                                    <button class="layui-btn" lay-submit="" lay-filter="sreach" onclick="location.reload()" title="刷新">
+                                        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-card-body ">
                             <table id="tabTitle" lay-filter="tabTitle"></table>
                         </div>
                     </div>
@@ -35,7 +48,9 @@
     </body>
     <script type="text/html" id="toolbarDemo">
         <div class = "layui-btn-container" >
+<!--
             <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+-->
             <button class="layui-btn"  lay-submit="" onclick="xadmin.open('添加竞赛项目','./competitionAdd',600,550)"><i class="layui-icon"></i>增加</button>
             <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
                 <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
@@ -85,12 +100,12 @@
                             }
                         }
                         ,{
-                            field:'starttime', Width:100,title:'开始报名时间' ,event:'editStartDate',templet: function (d) {
+                            field:'starttime', Width:100,title:'开始报名时间' ,event:'editStartDate',sort: true,templet: function (d) {
                             return d.starttime;
                             }
                         }
                         ,{
-                            field:'endtime',  Width: 100,title:'结束报名时间',event:'editEndDate',templet: function (d) {
+                            field:'endtime',  Width: 100,title:'结束报名时间',event:'editEndDate',sort: true,templet: function (d) {
                             return d.endtime;
                             }
                          }

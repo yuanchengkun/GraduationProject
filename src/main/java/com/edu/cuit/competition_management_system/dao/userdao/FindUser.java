@@ -1,6 +1,8 @@
 package com.edu.cuit.competition_management_system.dao.userdao;
 
 import com.edu.cuit.competition_management_system.entity.Users;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -29,4 +31,7 @@ public interface FindUser extends JpaRepository <Users,Integer>{
     void setUserComtp(int id, Integer comtpid); //通过用户id修改用户选择的竞赛id
 
     List<Users> findAllByComtpid(int comtpid);//根据指导的竞赛类型查找老师
+    List<Users> findAllByComidNotNull();//查询所有报名了的学生
+
+    Page<Users> findAllByComidNotNullAndType(int type,Pageable pageable);
 }

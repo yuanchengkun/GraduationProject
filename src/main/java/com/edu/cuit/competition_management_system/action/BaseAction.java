@@ -39,7 +39,7 @@ public class BaseAction {
         LocalDate today = LocalDate.now();
         int page = 0,size = 6;
         Pageable pager = PageRequest.of(page,size);
-        Page<Competition> competitions = comDao.findAllByEndtimeIsAfter(today.toString(),pager);
+        Page<Competition> competitions = comDao.findAllByEndtimeIsAfterAndPicIsNotNull(today.toString(),pager);
         List<Competition> competitionList = competitions.getContent();
         session.setAttribute("noticeListInFive",noticeService.findNoticeInFiveDay());
         session.setAttribute("comTp",comTpService.findAllComTp());

@@ -12,6 +12,6 @@ public interface ComDao extends JpaRepository<Competition,Integer> {
     List<Competition> findAllByComtpidAndEndtimeIsAfter(Integer comTpid,String time);
     //根据竞赛种类查询当前还没开始的竞赛
     List<Competition> findAllByComtpidAndComtimeIsAfter(Integer comTpid,String time);
-    //查询报名结束之前的6个竞赛
-    Page<Competition> findAllByEndtimeIsAfter(String time,Pageable pageable);
+    //查询报名结束之前的6个竞赛并且宣传图片不是空的
+    Page<Competition> findAllByEndtimeIsAfterAndPicIsNotNull(String time,Pageable pageable);
 }

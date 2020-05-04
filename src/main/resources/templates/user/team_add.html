@@ -46,6 +46,15 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label for="demo1" class="layui-form-label">
+                    <button type="button" class="layui-btn" id="test1">上传宣传图片</button>
+                </label>
+                <div class="layui-input-inline">
+                    <img class="layui-upload-img" id="demo1">
+                    <p id="demoText"><input type="hidden" id="pic" name="pic"/></p>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label  class="layui-form-label"></label>
                 <button class="layui-btn" lay-filter="add" lay-submit="">增加</button>
             </div>
@@ -54,9 +63,46 @@
 </div>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var selectComtp = /*[[@{/AdminMember/selectComtp}]]*/;//获取动作地址
     var selectTeacher = /*[[@{/User/selectTeacher}]]*/;//获取动作地址
+    var picUrl = /*[[@{/File/uploadPic}]]*/;//取值
     /*]]>*/
+
+    layui.use('upload', function() {
+        var $ = layui.jquery
+            , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+            , url: picUrl //改成您自己的上传接口
+            ,data:{classPic:"teamPic"}
+            //,accept:"file" //这个 file作为参数提交给服务器，非常重要。file封装上传的文件对象。
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                console.log(res)
+                //如果上传失败
+                if (res.code == 0) {
+                    return layer.msg('上传失败');
+                }
+                var fileName = res.msg;
+                $("#pic").attr('value', fileName);
+                //上传成功
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+    });
     //获取待选规则
     layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
         var selMaintenanceItem='<option value=\'\'>--请选择指导老师--</option>'
