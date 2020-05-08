@@ -3,6 +3,7 @@ package com.edu.cuit.competition_management_system.action;
 import com.edu.cuit.competition_management_system.dao.userdao.ComDao;
 import com.edu.cuit.competition_management_system.entity.Competition;
 import com.edu.cuit.competition_management_system.entity.Notice;
+import com.edu.cuit.competition_management_system.entity.Users;
 import com.edu.cuit.competition_management_system.service.ComTpService;
 import com.edu.cuit.competition_management_system.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,11 @@ public class BaseAction {
     @Autowired
     ComDao comDao;
 
+    /**
+     * 初始化首页数据
+     * @param session
+     * @return
+     */
     @RequestMapping("index")
     public String index(HttpSession session){
         LocalDate today = LocalDate.now();
@@ -47,12 +53,25 @@ public class BaseAction {
         return "index";
     }
 
-    @RequestMapping("daohang")
-    public String execute(){
-
-        return "daohang";
+    /**
+     * 分用户跳转到个人界面
+     * @param session
+     * @return
+     */
+    @RequestMapping("mine")
+    public String mine(HttpSession session){
+        Users users = (Users) session.getAttribute("loginUser");
+        if(users!=null) {
+            if(users.getType()==0)
+                return "redirect:/Admin/index";
+            if(users.getType()==2)
+                return "redirect:/Teacher/index";
+            else
+                return "redirect:/User/index";
+        }else {
+            return "redirect:/LoginAction/toLogin";
+        }
     }
-
     /**
      * 跳转到通知详情页面
      * @param id 通知id

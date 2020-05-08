@@ -21,13 +21,13 @@ public class TeamUserServiceImpl implements TeamUserService {
 
     /**
      *
-     * @param id 1全部取消 2单个取消
-     * @param state
+     * @param id
+     * @param state 1全部取消 2单个取消
      */
     @Transactional
     @Override
     public void quxiaoshengqing(int id, int state) {
-        if(state==2){//用户单个取消
+        if(state==2){//根据申请id单个取消
             teamUserDao.setState(id,2);
         }else if(state==1){//用户全部取消
             teamUserDao.setStateWhthUser(id,2);

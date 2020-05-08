@@ -1,4 +1,4 @@
-package com.edu.cuit.competition_management_system.action;
+package com.edu.cuit.competition_management_system.action.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -340,6 +340,15 @@ public class AdminMemberAction {
             if(team.getTeamid()!=null){
                 Team source = teamDao.findById(team.getTeamid()).get();
                 UpdateTool.copyNullProperties(source,team);
+                //如果将团队状态变更为失效和申请失败需要将想对应的用户团队字段置空
+                if(team.getState()==0||team.getState()==3){
+                    List<Users> usersList = findUser.findAllByTeamid(team.getTeamid());
+                    for (Users u:usersList) {
+                        u.setTeamid(null);
+                        findUser.save(u);
+                    }
+                }
+
             }
             teamDao.save(team);
             msg="ok";

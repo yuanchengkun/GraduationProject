@@ -22,6 +22,17 @@ public class Users {
     private Integer teamid;/*学生的团队*/
     private Integer comid;/*学生报名的竞赛*/
     private Integer comtpid;/*老师指导的竞赛类型*/
+    private String userfile;//个人介绍文档
+    @Transient
+    private Competition com;/*学生参加的竞赛*/
+
+    @JoinColumn(name = "comid",insertable = false, updatable = false)
+    @ManyToOne
+    private Competition competition;//学生报名的竞赛
+
+    @JoinColumn(name = "comtpid",insertable = false, updatable = false)
+    @ManyToOne
+    private Competitiontype competitiontype;//老师指导的竞赛类型
 
     @Override
     public String toString() {
@@ -42,6 +53,30 @@ public class Users {
                 ", comtpid=" + comtpid +
                 ", com=" + com +
                 '}';
+    }
+
+    public Competition getCompetition() {
+        return competition;
+    }
+
+    public void setCompetition(Competition competition) {
+        this.competition = competition;
+    }
+
+    public Competitiontype getCompetitiontype() {
+        return competitiontype;
+    }
+
+    public void setCompetitiontype(Competitiontype competitiontype) {
+        this.competitiontype = competitiontype;
+    }
+
+    public String getUserfile() {
+        return userfile;
+    }
+
+    public void setUserfile(String userfile) {
+        this.userfile = userfile;
     }
 
     public Integer getComtpid() {
@@ -76,9 +111,7 @@ public class Users {
         this.com = com;
     }
 
-    @Transient
 
-    private Competition com;/*学生参加的竞赛或老师指导的竞赛*/
 
 
 

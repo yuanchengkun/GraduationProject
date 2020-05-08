@@ -1,4 +1,4 @@
-package com.edu.cuit.competition_management_system.action;
+package com.edu.cuit.competition_management_system.action.admin;
 
 import com.edu.cuit.competition_management_system.entity.Users;
 import org.springframework.stereotype.Controller;
@@ -13,8 +13,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("Admin")
 public class AdminAction {
-    @RequestMapping("toAdmin")
-    public String toAdmin(HttpSession session){
+    @RequestMapping("index")
+    public String index(HttpSession session){
         Users users = (Users) session.getAttribute("loginUser");
         if(users!=null&&users.getType()==0){
             return "admin/index";

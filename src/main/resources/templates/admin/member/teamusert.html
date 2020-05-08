@@ -36,11 +36,8 @@
 </body>
 
 <script type="text/html" id="barDemo">
-    <a onclick="resetPW({{d.id}})" title="重置密码" href="javascript:;">
-        <i class="layui-icon">&#xe631;</i>
-    </a>
-    <a title="删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
-        <i class="layui-icon">&#xe640;</i>
+    <a onclick="downloadFile({{d.userid}})" title="查看简历" href="javascript:;">
+        <i class="layui-icon">&#xe63c;</i>
     </a>
     <!-- 这里同样支持 laytpl 语法，如： -->
     <!--{{#  if(d.experience > 100){ }}
@@ -53,12 +50,12 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     var Url = /*[[@{/AdminMember/teamuser}]]*/;//获取动作地址
+
     /*]]>*/
 
 
     layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
         var id =$("#id").val();
-        // 监听修改update到表格中
 
 
         var table = layui.table;
@@ -121,58 +118,30 @@
 <script th:inline="javascript">
 
     /*<![CDATA[*/
-    var deleteUrl = /*[[@{/AdminMember/setUserState}]]*/;//获取动作地址
-    var resetPwUrl = /*[[@{/AdminMember/resetPw}]]*/;//获取动作地址
+    var downloadUrl = /*[[@{/File/PersonFileDownload}]]*/;//获取动作地址
     /*]]>*/
 
-    /*用户-删除*/
-    function member_del(obj,id){
-        var flag = true;
-        layer.confirm('确认要删除吗?', {icon: 3, title:'提示'}, function(index){
-            //发异步删除数据
-            $.ajax({
-                url: deleteUrl,
-                data:{id:id,state:0},
-                async:true,
-                dataType:'json',
-                success:function(msg){
-                    if(msg=="error"){
-                        flag=false;
-                    }
-                }
-            })
-            if(flag==true){
-                $(obj).parents("tr").remove();
-                layer.msg('已删除!',{icon:1,time:1000});
-            }else {
-                layer.msg('删除失败!',{icon:1,time:1000});
-            }
-            layer.close(index);
-        });
-    }
-    //重置用户密码
-    function resetPW(id) {
-        var flag = true;
-        layer.confirm('确认要重置密码为”000000“吗?', {icon: 3, title:'提示'}, function(index){
-            //发异步删除数据
-            $.ajax({
-                url: resetPwUrl,
-                data:{id:id},
-                async:true,
-                dataType:'json',
-                success:function(msg){
-                    if(msg=="error"){
-                        flag=false;
-                    }
-                }
-            })
-            if(flag==true){
-                layer.msg('重置成功!',{icon:1,time:1000});
-            }else {
-                layer.msg('重置失败!',{icon:1,time:1000});
-            }
-            layer.close(index);
-        });
+
+    //在线预览团员简历
+    function downloadFile(userid) {
+
+        var urlStr1 =downloadUrl;
+        //form提交下载
+        var form = $('<form></form>');
+        form.attr('style', 'display:none');
+        form.attr('target', '_blank');
+        form.attr('method', 'post'); //form提交路径      
+        form.attr('action', urlStr1)
+        var input = $('<input type="text" name="userid" id="fileId" />'); // 可以添加一些参数
+        var input1 = $('<input type="text" name="openStyle" id="openStyle" />'); // 可以添加一些参数
+        input.attr('value', userid);
+        input1.attr('value', "inline");
+        form.append(input);
+        form.append(input1);
+        $(document.body).append(form);
+        form.submit();
+
+
     }
 </script>
 </html>

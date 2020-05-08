@@ -1,10 +1,12 @@
 package com.edu.cuit.competition_management_system.action;
 
 import com.edu.cuit.competition_management_system.dao.userdao.FileDao;
+import com.edu.cuit.competition_management_system.dao.userdao.FindUser;
 import com.edu.cuit.competition_management_system.entity.FileUpload;
 import com.edu.cuit.competition_management_system.entity.Users;
 import com.edu.cuit.competition_management_system.json.LayuiTable;
 import com.edu.cuit.competition_management_system.util.FileUploadUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,6 +35,8 @@ import java.util.Map;
 public class FileAction {
     @Autowired
     FileDao fileDao;
+    @Autowired
+    FindUser findUser;
     /**
      * 文件上传
      * @param request
@@ -119,19 +124,109 @@ public class FileAction {
     @RequestMapping("/fileDownload")
     public  void fileDownload(int fileId,HttpServletRequest request,HttpServletResponse response) throws UnsupportedEncodingException,IOException {
         FileUpload fileupload=fileDao.findById(fileId).get();
-        System.out.println(fileupload);
         String fileName=fileupload.getFilename();
         String saveName=fileupload.getSavename();
-        System.out.println(fileName);
         String path = ResourceUtils.getURL("classpath:").getPath();
         path+="/"+saveName;
+        downloadFile(null,response,path,fileName);
+
+    }
+
+    /**
+     * 上传图片
+     * @param file
+     * @param classPic 图片分类文件夹名
+     * @return
+     * @throws IllegalStateException
+     * @throws IOException
+     */
+    @RequestMapping("uploadPic")
+    @ResponseBody
+    public LayuiTable uploadCarsPicture(MultipartFile file,String classPic)throws IllegalStateException, IOException{
+        LayuiTable layuiTable = new LayuiTable();
+        String msg="";
+        String path =ResourceUtils.getURL("classpath:").getPath();
+        System.out.println(path);
+        path=path+"/"+"static/"+classPic;
+        System.out.println(path);
+        try{
+            String uploadSuccessFileName = FileUploadUtils.uploadFile(file,path);
+            msg=uploadSuccessFileName;
+            layuiTable.setCode(1);
+            layuiTable.setMsg(msg);
+            return layuiTable;
+        }
+        catch(Exception ex){
+            layuiTable.setCode(0);
+            ex.printStackTrace();
+            msg="error";
+            layuiTable.setMsg(msg);
+            return layuiTable;
+        }
+    }
+
+    /**
+     * 个人简介文件上传
+     * @param file
+     * @param classPic
+     * @param session
+     * @return
+     * @throws IllegalStateException
+     * @throws IOException
+     */
+    @RequestMapping("uploadPersonFile")
+    @ResponseBody
+    public LayuiTable uploadPersonFile(MultipartFile file,String classPic,HttpSession session)throws IllegalStateException, IOException{
+        LayuiTable layuiTable;
+        Users users = (Users) session.getAttribute("loginUser");
+        classPic = classPic+"/"+users.getUsername();
+        //保存文件
+        layuiTable = uploadCarsPicture(file,classPic);
+        //保存到用户数据库
+        if(!"error".equals(layuiTable.getMsg())){
+            //删除之前的文件
+            String fileName = users.getUserfile();
+            if(fileName!=null){
+                String path = ResourceUtils.getURL("classpath:").getPath();
+                path+="/"+"static/"+classPic+"/"+fileName;
+                File deleteFile=new File(path);
+                if(deleteFile.exists()){
+                    deleteFile.delete();
+                }
+            }
+            //保存用户数据库
+            users.setUserfile(layuiTable.getMsg());
+            findUser.save(users);
+        }
+        return layuiTable;
+    }
+    @RequestMapping("PersonFileDownload")
+    @ResponseBody
+    public void PersonFileDownload(HttpServletResponse response,int userid,String openStyle)throws UnsupportedEncodingException,IOException{
+        Users users = findUser.findById(userid).get();
+        if(users.getUserfile()==null){
+            response.setContentType("text/html;charset=utf-8");
+            PrintWriter out = response.getWriter();
+            out.print("该成员没有上传个人简历");
+            return;
+        }
+        String path = ResourceUtils.getURL("classpath:").getPath();
+        path+="static/"+"personPic"+"/"+users.getUsername()+"/"+users.getUserfile();
+        String fileName = users.getUserfile();
+       /* if("".equals(openStyle)||openStyle==null)
+            downloadFile(openStyle,response,path,users.getUserfile());
+        else*/
+            download(openStyle,path,response,fileName);
+    }
+    private void downloadFile(String openStyle,HttpServletResponse response,String path,String fileName)throws UnsupportedEncodingException,IOException{
+        //获取打开方式
+        openStyle = openStyle == null ? "attachment" : openStyle;
         File file = new File(path);
         String name= new String(fileName.getBytes("GBK"), "ISO-8859-1");
         if (file.exists()) {
-
             response.setContentType("application/force-download");// 设置强制下载不打开
             response.addHeader("Content-Disposition",
-                    "attachment;fileName="+name);// 设置文件名
+                    openStyle + ";fileName="+name);// 设置文件名
             byte[] buffer = new byte[1024];
             FileInputStream fis = null;
             BufferedInputStream bis = null;
@@ -163,39 +258,26 @@ public class FileAction {
                 }
             }
         }
-
     }
-
-    /**
-     * 上传图片
-     * @param file
-     * @param classPic 图片分类文件夹名
-     * @return
-     * @throws IllegalStateException
-     * @throws IOException
-     */
-    @RequestMapping("uploadPic")
-    @ResponseBody
-    public LayuiTable uploadCarsPicture(MultipartFile file,String classPic)throws IllegalStateException, IOException{
-        LayuiTable layuiTable = new LayuiTable();
-        String msg="";
-        String path =ResourceUtils.getURL("classpath:").getPath();
-        path=path+"/"+"static/"+classPic;
-
-        try{
-            String uploadSuccessFileName = FileUploadUtils.uploadFile(file,path);
-            msg=uploadSuccessFileName;
-            layuiTable.setCode(1);
-            layuiTable.setMsg(msg);
-            return layuiTable;
+    private void download(String openStyle, String path, HttpServletResponse response,String fileName) throws IOException {
+        //获取打开方式
+        if("".equals(openStyle)||openStyle==null){
+            openStyle = "attachment";
         }
-        catch(Exception ex){
-            layuiTable.setCode(0);
-            ex.printStackTrace();
-            msg="error";
-            layuiTable.setMsg(msg);
-            return layuiTable;
-        }
+        //openStyle = openStyle == null ? "attachment" : openStyle;
+        //获取文件信息
+
+        //根据文件信息中文件名字 和 文件存储路径获取文件输入流
+        String realpath = path;
+        //获取文件输入流
+        FileInputStream is = new FileInputStream(new File(realpath));
+        //附件下载
+        response.setHeader("content-disposition", openStyle + ";fileName=" + fileName);
+        //获取响应输出流
+        ServletOutputStream os = response.getOutputStream();
+        //文件拷贝
+        IOUtils.copy(is, os);
+        IOUtils.closeQuietly(is);
+        IOUtils.closeQuietly(os);
     }
-
 }

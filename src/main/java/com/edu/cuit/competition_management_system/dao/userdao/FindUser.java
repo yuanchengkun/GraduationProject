@@ -34,4 +34,7 @@ public interface FindUser extends JpaRepository <Users,Integer>{
     List<Users> findAllByComidNotNull();//查询所有报名了的学生
 
     Page<Users> findAllByComidNotNullAndType(int type,Pageable pageable);
+
+    List<Users> findAllByTeamid(Integer teamid);
+    List<Users> findAllByTypeAndComtpidNotNull(int type);//查询所有的指导老师
 }

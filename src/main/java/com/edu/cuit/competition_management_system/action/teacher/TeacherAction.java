@@ -1,4 +1,4 @@
-package com.edu.cuit.competition_management_system.action;
+package com.edu.cuit.competition_management_system.action.teacher;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -10,7 +10,6 @@ import com.edu.cuit.competition_management_system.entity.Competition;
 import com.edu.cuit.competition_management_system.entity.Team;
 import com.edu.cuit.competition_management_system.entity.TeamUser;
 import com.edu.cuit.competition_management_system.entity.Users;
-import com.edu.cuit.competition_management_system.service.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +33,15 @@ public class TeacherAction {
     TeamUserDao teamUserDao;
     @Autowired
     FindUser findUser;
+
+    @RequestMapping("index")
+    public String index(HttpSession session){
+        Users users = (Users) session.getAttribute("loginUser");
+        if(users!=null&&users.getType()==2){
+            return "teacher/index";
+        }else
+            return "redirect:/LoginAction/toLogin";
+    }
     @RequestMapping("home")
     public String home(HttpServletRequest request, HttpSession session){
         Users users = (Users) session.getAttribute("loginUser");

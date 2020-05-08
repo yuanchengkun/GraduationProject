@@ -63,7 +63,7 @@
 </div>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var selectTeacher = /*[[@{/User/selectTeacher}]]*/;//获取动作地址
+    var selectTeacher = /*[[@{/UserTeam/selectTeacher}]]*/;//获取动作地址
     var picUrl = /*[[@{/File/uploadPic}]]*/;//取值
     /*]]>*/
 
@@ -132,7 +132,7 @@
 </script>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var update = /*[[@{/User/teamAdd}]]*/;//获取动作地址
+    var update = /*[[@{/UserTeam/teamAdd}]]*/;//获取动作地址
     /*]]>*/
     layui.use(['form', 'layer', 'jquery'],
     function () {
@@ -161,7 +161,7 @@
                                 });
                             return;
                         }else if(msg=="chongfu"){
-                            layer.msg('只能申请创建一个团队!');
+                            layer.msg('请先取消申请加入别人的团队再创建!');
                         }
                     }
                 })

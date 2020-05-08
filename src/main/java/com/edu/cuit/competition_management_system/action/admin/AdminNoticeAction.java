@@ -1,4 +1,4 @@
-package com.edu.cuit.competition_management_system.action;
+package com.edu.cuit.competition_management_system.action.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;

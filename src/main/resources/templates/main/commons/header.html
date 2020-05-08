@@ -56,8 +56,7 @@
                         <h3>欢迎你<span th:text="${session.loginUser.truename}"></span></h3>
 -->
                         <ul class="sub">
-                            <li><a th:href="@{/User/mine}">个人中心</a></li>
-                            <li><a th:href="@{/User/mine}">修改密码</a></li>
+                            <li><a th:href="@{/BaseAction/mine}">个人中心</a></li>
                             <li><a th:href="@{/LoginAction/logout}">退出登录</a></li>
                         </ul>
                     </li>

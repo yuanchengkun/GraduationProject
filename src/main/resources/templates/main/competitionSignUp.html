@@ -42,7 +42,7 @@
 					<div class="con_box">
 						<ul class="img-list" id="all">
 							<li  th:each="competition:${competitionInTime}">
-								<p>竞赛种类：<span th:text="${competition.competitiontype.name}"></span></p>
+								<p>竞赛种类：<span th:text="${competition.comtype.name}"></span></p>
 								<p>竞赛开始时间：<span th:text="${competition.comtime}"></span></p>
 								<p>竞赛报名时间：<span th:text="${competition.starttime}"></span>---><span th:text="${competition.endtime}"></span></p>
 								<p>竞赛描述：<span th:text="${competition.miaosu}"></span></p>
