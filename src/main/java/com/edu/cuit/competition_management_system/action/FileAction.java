@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class FileAction {
                 file.transferTo(newFile);
                 //保存进数据库
                 FileUpload fileUpload=new FileUpload();
-                fileUpload.setUploaddate(new Date().toString());
+                fileUpload.setUploaddate(LocalDate.now().toString());
                 fileUpload.setSavename(uploadName);
                 fileUpload.setFilename(fileName);
                 fileUpload.setUserid(users.getId());

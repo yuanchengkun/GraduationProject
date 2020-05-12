@@ -118,5 +118,8 @@ public class BaseAction {
         session.setAttribute("noticeList",noticeService.findAllNotice());
         return "main/notice";
     }
-
+    @RequestMapping("toFile")
+    public String toFile(){
+        return "main/resource";
+    }
 }

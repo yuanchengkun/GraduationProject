@@ -37,17 +37,17 @@
                     <li class="nLi">
                         <h3><a href="#">新闻公告</a></h3>
                         <ul class="sub">
-                            <li><a href="main/teachers.html">综合新闻</a></li>
+                            <!--<li><a href="main/teachers.html">综合新闻</a></li>-->
                             <li><a th:href="@{/BaseAction/notice}">通知公告</a></li>
-                            <li><a href="main/technology.html">获奖公告</a></li>
+                            <!--<li><a href="main/technology.html">获奖公告</a></li>-->
                         </ul>
                     </li>
                     <li class="nLi">
                         <h3><a href="#">在线学习</a></h3>
                         <ul class="sub">
-                            <li><a href="main/study.html">学习成果</a></li>
-                            <li><a href="main/study.html">文档学习</a></li>
-                            <li><a href="main/student.html">在线测试</a></li>
+                            <!--<li><a href="main/study.html">学习成果</a></li>-->
+                            <li><a th:href="@{/BaseAction/toFile}">文档学习</a></li>
+                            <!--<li><a href="main/student.html">在线测试</a></li>-->
                         </ul>
                     </li>
                     <li th:if="${session.loginUser!=null}" class="nLi">
