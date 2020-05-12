@@ -51,6 +51,25 @@ public class TeacherAction {
         return "teacher/home";
     }
     /**
+     * 初始化首页数据
+     * @param request
+     * @param session
+     * @return
+     */
+    @RequestMapping("welcome")
+    public String welcome(HttpServletRequest request,HttpSession session){
+        Users users = (Users) session.getAttribute("loginUser");
+        if(users.getComtpid()==null){
+
+        }else {
+            LocalDate today = LocalDate.now();
+            //找出指导老师指导竞赛类型还未开始的竞赛
+            List<Competition> competitions = comDao.findAllByComtpidAndComtimeIsAfter(users.getComtpid(),today.toString());
+            request.setAttribute("competitions",competitions);
+        }
+        return "teacher/welcome";
+    }
+    /**
      * 跳转到我的团队页面
      * @param session
      * @param request
@@ -66,37 +85,5 @@ public class TeacherAction {
         return "teacher/team";
     }
 
-    /**
-     * 同意创建团队
-     * @param parm
-     * @param response
-     * @param session
-     * @throws IOException
-     */
-    @RequestMapping("tongyi")
-    public void  teamAdd(String parm, HttpServletResponse response, HttpSession session) throws IOException {
-        Users users = (Users) session.getAttribute("loginUser");
-        response.setContentType("text/html;charset=utf-8");
-        PrintWriter out = response.getWriter();
-        String msg = "";
-        Team team = JSON.parseObject(parm, new TypeReference<Team>() {});
-        team.setState(1);
-        Users stu = findUser.findById(team.getCaptainid()).get();
-        stu.setTeamid(team.getTeamid());
-        TeamUser teamUser = new TeamUser();
-        teamUser.setState(0);
-        teamUser.setTeamid(team.getTeamid());
-        teamUser.setUserid(team.getCaptainid());
-        try {
-            findUser.save(stu);
-            teamDao.save(team);
-            teamUserDao.save(teamUser);
-            msg = "ok";
-        } catch (Exception e) {
-            msg = "error";
-            System.out.println(e.getMessage());
-        } finally {
-            out.print(msg);
-        }
-    }
+
 }

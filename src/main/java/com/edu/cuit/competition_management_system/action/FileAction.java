@@ -45,7 +45,7 @@ public class FileAction {
      */
     @ResponseBody
     @RequestMapping("/uploadFile")
-    public LayuiTable saveFile(@RequestParam("file")MultipartFile file, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IllegalStateException, IOException{
+    public LayuiTable saveFile(@RequestParam("file")MultipartFile file,String teamid, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IllegalStateException, IOException{
         LayuiTable jsonData = new LayuiTable();
         Users users = (Users)session.getAttribute("loginUser");
         //String statueCode="0";
@@ -76,6 +76,10 @@ public class FileAction {
                 fileUpload.setSavename(uploadName);
                 fileUpload.setFilename(fileName);
                 fileUpload.setUserid(users.getId());
+                if(teamid==null||teamid=="")
+                    fileUpload.setTeamid(users.getTeamid());
+                else
+                    fileUpload.setTeamid(Integer.parseInt(teamid));
                 System.out.println(fileUpload);
                 fileDao.save(fileUpload);
                /* if(insertStatue>0){

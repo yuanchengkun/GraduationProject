@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-X-admin2.2</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!--
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+-->
+        <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+        <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+        <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+        <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+        <script type="text/javascript" th:src="@{/res/jquery/jquery-3.3.1.min.js}"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+    <body>
+        <div class="layui-fluid">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md12" >
+                        <div class="layui-card">
+                            <div class="layui-card-header">过往团队记录</div>
+                            <div class="layui-card-body ">
+                                <table id="teamTable" lay-filter="teamTable"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </body>
+    <script type="text/html" id="barDemo">
+        <a onclick="forwardTeam({{d.teamid}})" title="查看成员详情" href="javascript:;">
+            <i class="layui-icon">&#xe63c;</i>
+        </a>
+        <!-- 这里同样支持 laytpl 语法，如： -->
+        <!--{{#  if(d.experience > 100){ }}
+        <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+        {{#  } }}-->
+    </script>
+    <script type="text/html" id="toolbarDemo">
+        <div class = "layui-btn-container" >
+            <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
+                <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+            </button>
+        </div >
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var Url = /*[[@{/UserTeam/pagePastTeam}]]*/;//获取动作地址
+        var src = /*[[@{/teamPic}]]*/;//获取动作地址
+        var teamAdd = /*[[@{/User/toTeamAdd}]]*/;//获取动作地址
+        /*]]>*/
+
+        layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
+            var element = layui.element;
+            var table = layui.table;
+            table.render({
+                elem: '#teamTable' //指定原始表格元素选择器（推荐id选择器）
+                ,url: Url
+                ,height: 'full-150'
+                ,page:true
+                ,limit:10
+                ,limits:[5,10,15,20]
+                ,method: 'post'
+                ,toolbar: '#toolbarDemo'
+                ,where: {type: 1}
+                ,cols:  [
+                    [ //标题栏
+                        ,{field: 'teamid', title: 'ID', width: 80,sort: true}
+                        ,{field: 'teamname', title: '团队名', width: 120}
+                        ,{field:'state',  minWidth: 100,title:'团队状态',templet: function (d) {
+                            return d.teamState;
+                        }
+                    }
+                        ,{field:'captain.truename', width:100,title:'团队队长'
+                        ,templet: function (d) {
+                            return d.captain.truename;
+                        }
+                    }
+                        ,{field: 'competition.comtype.name',  Width: 80, title: '团队竞赛'
+                        , templet: function (d) {
+                            return d.competition.comtype.name;
+                        }
+                    }
+                        ,
+                        {
+                            field:'d.com.name',  Width: 80,title:'指导老师',
+                            templet: function (d) {
+
+                                return d.teacher.truename;
+                            }
+                        }
+                        ,{  minWidth: 200,title:'宣传图片',event:"updatePic",templet:function(d){
+                            var src1 = d.pic;
+
+                            var selMaintenanceItem = '<img   src="'+src+'/'+src1+'" >'
+                            return selMaintenanceItem;
+                        }}
+                        ,{field:'caozuo',toolbar: '#barDemo',title:'操作'}
+                    ]
+                ]
+            });
+        })
+
+
+    </script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var forwardTeamUrl = /*[[@{/TeacherTeam/forwardTeam}]]*/;//获取动作地址
+    /*]]>*/
+    //查看团队成员详情
+    function forwardTeam(id) {
+        xadmin.open('团队成员',forwardTeamUrl+"?id="+id);
+    }
+
+</script>
+</html>

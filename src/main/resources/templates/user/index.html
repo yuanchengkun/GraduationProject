@@ -21,7 +21,7 @@
         <![endif]-->
         <script>
             // 是否开启刷新记忆tab功能
-            //var is_remember = false;
+            var is_remember = false;
         </script>
     </head>
     <body class="index">
@@ -47,7 +47,8 @@
                     </dl>
                 </li>
                 <li class="layui-nav-item to-index">
-                    <a th:href="@{/BaseAction/index}">前台首页</a></li>
+                    <a th:href="@{/BaseAction/index}">前台首页</a>
+                </li>
             </ul>
         </div>
         <!-- 顶部结束 -->
@@ -56,29 +57,6 @@
         <div class="left-nav">
             <div id="side-nav">
                 <ul id="nav">
-                    <!--<li>
-                        <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="我的竞赛">&#xe723;</i>
-                            <cite>我的竞赛</cite>
-                            <i class="iconfont nav_right">&#xe697;</i></a>
-                        <ul class="sub-menu">
-                            &lt;!&ndash; <li>
-                                 <a onclick="xadmin.add_tab('新闻列表','order-list.html')">
-                                     <i class="iconfont">&#xe6a7;</i>
-                                     <cite>新闻列表</cite></a>
-                             </li>&ndash;&gt;
-                            <li>
-                                <a onclick="xadmin.add_tab('当前竞赛','../AdminNotice/toNotice')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>当前竞赛</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('以往竞赛','order-list1.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>以往竞赛</cite></a>
-                            </li>
-                        </ul>
-                    </li>&lt;!&ndash;竞赛信息&ndash;&gt;-->
                     <li>
                         <a href="javascript:;">
                             <i class="iconfont left-nav-li" lay-tips="我的团队">&#xe6b8;</i>
@@ -91,38 +69,28 @@
                                     <cite>当前团队</cite></a>
                             </li>
                             <li>
-                                <a onclick="xadmin.add_tab('以往团队','../AdminMember/member_list1',true)">
+                                <a onclick="xadmin.add_tab('以往团队','../UserTeam/toPastteam')">
                                     <i class="iconfont">&#xe6a7;</i>
                                     <cite>以往团队</cite></a>
                             </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('团队查看','../AdminMember/member_team',true)">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>团队查看</cite></a>
-                            </li>
+
                         </ul>
                     </li><!--团队信息-->
                     <li>
                         <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="资料查看">&#xe723;</i>
-                            <cite>资料查看</cite>
+                            <i class="iconfont left-nav-li" lay-tips="文档查看">&#xe723;</i>
+                            <cite>文档查看</cite>
                             <i class="iconfont nav_right">&#xe697;</i></a>
                         <ul class="sub-menu">
                             <li>
-                                <a onclick="xadmin.add_tab('我的资料','../AdminFile/fileList')">
+                                <a onclick="xadmin.add_tab('我的文档','../UserFile/myfile')">
                                     <i class="iconfont">&#xe6a7;</i>
-                                    <cite>我的资料</cite></a>
+                                    <cite>我的文档</cite></a>
                             </li>
                             <li>
-                                <a onclick="xadmin.add_tab('小组资料','../AdminFile/fileList')">
+                                <a onclick="xadmin.add_tab('小组文档','../UserFile/teamfile')">
                                     <i class="iconfont">&#xe6a7;</i>
-                                    <cite>小组资料</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('公开资料','../AdminFile/fileList')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>公开资料</cite>
-                                </a>
+                                    <cite>小组文档</cite></a>
                             </li>
                         </ul>
                     </li><!--资料管理-->

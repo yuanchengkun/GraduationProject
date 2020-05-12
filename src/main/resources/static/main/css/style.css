@@ -180,7 +180,7 @@ ul,li{
 	padding: 5px 12px;
 }
 .notice .infoList li{ 
-	height: 88px; border-bottom: dashed 1px #c8c7c7; margin-top: 10px;
+	height: 44px; border-bottom: dashed 1px #c8c7c7; margin-top: 10px;
 }
 .notice .infoList li a{
 	font-size: 14px; color: #656565;

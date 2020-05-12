@@ -22,6 +22,7 @@ public class FileUpload {
     private Team team;
     private Integer teamid;//共享的小组id
 
+    @Column(insertable = false)
     private Integer filelimit;//文档公开权限 0个人文档 1组内公开 2公开文档
 
     public Integer getFilelimit() {

@@ -1,88 +1,171 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>学科竞赛后台管理</title>
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!--
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+-->
+        <meta http-equiv="Cache-Control" content="no-siteapp" />
+        <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+        <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+        <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
+        <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+        <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+        <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+        <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script>
+            // 是否开启刷新记忆tab功能
+            var is_remember = false;
+        </script>
+    </head>
+    <body class="index">
+        <!-- 顶部开始 -->
+        <div class="container">
+            <div class="logo">
+                <a href="javascript:;">学科竞赛管理</a></div>
+            <div class="left_open">
+                <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
+            </div>
+            <ul class="layui-nav right" lay-filter="">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">欢迎你：<span th:text="${session.loginUser.truename}"></span></a>
+                    <dl class="layui-nav-child">
+                        <!-- 二级菜单 -->
+                        <dd><a th:href="@{/LoginAction/logout}">退出</a></dd>
+                        <dd>
+                            <a onclick="resetPassWord()">
+                                <i class="iconfont">&#xe6b8;</i>修改密码
+                            </a>
+                        </dd>
 
-	<head>
-		<meta charset="UTF-8">
-		<title>后台用户中心</title>
-		<link rel="stylesheet" th:href="@{/res/layui/css/layui.css}">
-		<link rel="stylesheet" type="text/css" th:href="@{/user/css/style.css}" />
-		<script th:src="@{/res/jquery/jquery-3.3.1.min.js}"></script>
-	</head>
+                    </dl>
+                </li>
+                <li class="layui-nav-item to-index">
+                    <a th:href="@{/BaseAction/index}">前台首页</a>
+                </li>
+            </ul>
+        </div>
+        <!-- 顶部结束 -->
+        <!-- 中部开始 -->
+        <!-- 左侧菜单开始 -->
+        <div class="left-nav">
+            <div id="side-nav">
+                <ul id="nav">
+                    <!--<li>
+                        <a href="javascript:;">
+                            <i class="iconfont left-nav-li" lay-tips="我的竞赛">&#xe723;</i>
+                            <cite>我的竞赛</cite>
+                            <i class="iconfont nav_right">&#xe697;</i></a>
+                        <ul class="sub-menu">
+                            &lt;!&ndash; <li>
+                                 <a onclick="xadmin.add_tab('新闻列表','order-list.html')">
+                                     <i class="iconfont">&#xe6a7;</i>
+                                     <cite>新闻列表</cite></a>
+                             </li>&ndash;&gt;
+                            <li>
+                                <a onclick="xadmin.add_tab('当前竞赛','../AdminNotice/toNotice')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>当前竞赛</cite></a>
+                            </li>
+                            <li>
+                                <a onclick="xadmin.add_tab('以往竞赛','order-list1.html')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>以往竞赛</cite></a>
+                            </li>
+                        </ul>
+                    </li>&lt;!&ndash;竞赛信息&ndash;&gt;-->
+                    <li>
+                        <a href="javascript:;">
+                            <i class="iconfont left-nav-li" lay-tips="团队管理">&#xe6b8;</i>
+                            <cite>团队管理</cite>
+                            <i class="iconfont nav_right">&#xe697;</i></a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a onclick="xadmin.add_tab('指导团队','../TeacherTeam/team')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>指导团队</cite>
+                                </a>
+                            </li>
+                            <li>
+                                <a onclick="xadmin.add_tab('批准团队','../TeacherTeam/teampizhun')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>批准团队</cite>
+                                </a>
+                            </li>
+                            <li>
+                                <a onclick="xadmin.add_tab('过往团队','../TeacherTeam/toPastteam')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>过往团队</cite>
+                                </a>
+                            </li>
 
-	<body>
-		<div class="header">
-			<div class="bar">
-				<div class="w1200">
-					<span class="l">学科竞赛管理<font>用户中心</font></span>
-					<span class="r"><a th:href="@{/LoginAction/logout}"><i class="icon iconfont icon-dianyuan"></i>退出登录</a></span>
-				</div>
-			</div>
-			<div class="user-info">
-				<div class="w1200">
-					<div class="user-headface">
-						<img th:src="@{/user/images/user_face.jpg}"/>
-					</div>
-					<div class="user-account">
-						<p class="tip">下午好，<span th:text="${session.loginUser.truename}">Tom</span></p>
-						<p class="account">
-							<span>帐户名：<span th:text="${session.loginUser.username}"></span></span>
-							<span th:if="${session.loginUser.card!=null}">学号：<span th:text="${session.loginUser.card}"></span></span>
-						</p>
-					</div>
-					<div class="user-modify">
-						<a th:href="@{/BaseAction/index}">返回首页></a>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="main w1200">
-			<div class="left">
-				<ul id="ul">
-					<li>
-						<a th:href="@{/Teacher/home}" class="active" onclick="fn(this)" target="right">
-							<i class="icon iconfont icon-lingdang"></i>
-							我的竞赛
-						</a>
-					</li>
-					<li>
-						<a  th:href="@{/Teacher/team}" onclick="fn(this)" target="right">
-							<i class="icon iconfont icon-fangzidichan"></i>
-							我的团队
-						</a>
-					</li>
-					<li>
-						<a href="#" onclick="fn(this)">
-							<i class="icon iconfont icon-wenda"></i>
-							我的活动
-						</a>
-					</li>
-				</ul>
-			</div>
-			<div class="right">
-				<div class="tap">
-					<span id="tap">我的竞赛</span>
-				</div>
-				<div class="container">
-					<!--<div class="no-doc">
-						<img th:src="@{/user/images/no_doc.jpg}"/>
-						<p>您还没有消息哦~</p>
-					</div>-->
-					<iframe th:src="@{/Teacher/home}" id="iframe" width="100%" height="100%" frameborder="0" name="right" ></iframe>
-				</div>
-			</div>
-		</div>
-		<script th:src="@{/res/layui/layui.js}"></script>
-		<script type="text/javascript">
-            $( function() {
-                $("#ul li a").click(function () {
-                    $("#ul li a").removeClass("active");
-                    $(this).addClass("active");
-                });
-            })
-            function fn(obj) {
-                document.getElementById("tap").innerHTML = obj.innerHTML;
-            }
-		</script>
-	</body>
+                        </ul>
+                    </li><!--团队信息-->
+                    <li>
+                        <a href="javascript:;">
+                            <i class="iconfont left-nav-li" lay-tips="文档管理">&#xe723;</i>
+                            <cite>文档管理</cite>
+                            <i class="iconfont nav_right">&#xe697;</i></a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a onclick="xadmin.add_tab('我的文档','../TeacherFile/myfile')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>我的文档</cite></a>
+                            </li>
+                            <li>
+                                <a onclick="xadmin.add_tab('竞赛文档','../TeacherFile/comfile')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>竞赛文档</cite></a>
+                            </li>
+                        </ul>
+                    </li><!--资料管理-->
+                </ul>
+            </div>
+        </div>
+        <!-- <div class="x-slide_left"></div> -->
+        <!-- 左侧菜单结束 -->
+        <!-- 右侧主体开始 -->
+        <div class="page-content">
+            <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+                <ul class="layui-tab-title">
+                    <li class="home">
+                        <i class="layui-icon">&#xe68e;</i>
+                        我的桌面
+                    </li>
+                </ul>
+                <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">
+                    <dl>
+                        <dd data-type="this">关闭当前</dd>
+                        <dd data-type="other">关闭其它</dd>
+                        <dd data-type="all">关闭全部</dd>
+                    </dl>
+                </div>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <iframe th:src='@{/Teacher/welcome}' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+                    </div>
+                </div>
+                <div id="tab_show"></div>
+            </div>
+        </div>
+        <div class="page-content-bg"></div>
+        <style id="theme_style"></style>
+        <!-- 右侧主体结束 -->
+        <!-- 中部结束 -->
+    </body>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var resetPassword = /*[[@{/LoginAction/resetPassWord}]]*/;//获取动作地址
+        /*]]>*/
+        function resetPassWord() {
 
+            xadmin.open('弹出自动宽高',resetPassword);
+        }
+    </script>
 </html>

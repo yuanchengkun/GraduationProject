@@ -66,7 +66,10 @@ public class UserTeamAction {
         session.setAttribute("loginUser",users);
         if(users.getTeamid()!=null){
             Team team = teamService.findById(users.getTeamid());
+            //如果用户的团队还在申请中
+            Team createteam = teamDao.findByCaptainidAndState(users.getId(),2);
             request.setAttribute("userTeam",team);
+            request.setAttribute("createteam",createteam);
         }
         return "user/team/teamnow";
     }
@@ -315,7 +318,8 @@ public class UserTeamAction {
         String msg="";
         try{
             List<TeamUser> teamUserList = teamUserDao.findAllByUseridAndStateAndTeamidNotNull(users.getId(),1);
-            if(teamUserList==null){//用户没有申请加入团队
+            System.out.println("我的申请："+teamUserList.toString());
+            if(teamUserList.size()==0){//用户没有申请加入团队
                 teamService.saveTeam(team);
                 users.setTeamid(team.getTeamid());
                 findUser.save(users);
@@ -356,6 +360,47 @@ public class UserTeamAction {
                 UpdateTool.copyNullProperties(source,team);
             }
             teamDao.save(team);
+            msg="ok";
+        }catch (Exception e){
+            msg="error";
+            System.out.println(e.getMessage());
+        }
+        return msg;
+    }
+
+    /**
+     * 跳转到过往团队页面
+     * @return
+     */
+    @RequestMapping("toPastteam")
+    public String toPastteam(){
+        return "user/team/pastteam";
+    }
+    @RequestMapping("pagePastTeam")
+    @ResponseBody
+    public LayuiTable pagePastTeam(HttpSession session,String page,String limit){
+        Users users = (Users)session.getAttribute("loginUser");
+        LayuiTable layuiTable = new LayuiTable();
+        Pageable pager = PageRequest.of(Integer.parseInt(page)-1,Integer.parseInt(limit));
+        Page<Team> pagerlist = teamDao.findStuPastTeam(users.getId(),pager);
+        List<Team> usersList = pagerlist.getContent();
+        layuiTable.setCode(0);
+        layuiTable.setMsg("ok");
+        layuiTable.setCount(pagerlist.getTotalElements());
+        layuiTable.setData(usersList);
+        return layuiTable;
+    }
+    @RequestMapping("quxiaochuangjianUrl")
+    @ResponseBody String quxiaochuangjianUrl(HttpSession session){
+        String msg = "";
+        Users users = (Users)session.getAttribute("loginUser");
+        try{
+            //找到申请中的团队
+            Team team = teamDao.findByCaptainidAndState(users.getId(),2);
+            team.setState(3);
+            teamDao.save(team);
+            users.setTeamid(null);
+            findUser.save(users);
             msg="ok";
         }catch (Exception e){
             msg="error";

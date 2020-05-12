@@ -3,7 +3,7 @@ body{background: #f1f1f1;}
 img{border: none;}
 ul{list-style: none;}
 a{text-decoration: none;}
-.w1200{width: 1200px;height: 500px;margin: 0 auto;overflow: hidden;font-size: 16px;}
+.w1200{width: 1200px;height: 800px;margin: 0 auto;overflow: hidden;font-size: 16px;}
 .header{width: 100%;height: auto;overflow: hidden;margin-bottom: 20px;}
 .header .bar{background:#62ab00;height: 50px;line-height: 50px;color: #fff;}
 .header .bar .l{float: left;}

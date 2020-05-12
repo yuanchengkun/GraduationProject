@@ -48,9 +48,9 @@
             </div>
         </div>
         <div class="layui-col-md12" th:if="${session.loginUser.comid!=null&&session.loginUser.teamid!=null}">
-            <div class="layui-card">
-                <div class="layui-card-body ">
-                    <input id="id" th:value="${{userTeam.teamid}}" type="hidden">
+            <input id="id" th:value="${{userTeam.teamid}}" type="hidden">
+            <div class="layui-card" th:if="${createteam==null}">
+                <div class="layui-card-body" >
                     <blockquote class="layui-elem-quote">
                         <div class="layui-row layui-col-space10">
                             <p class="layui-col-xs3">团队名称:<span th:text="${userTeam.teamname}"></span></p>
@@ -63,6 +63,27 @@
                 <div class="layui-card-body ">
                     <table id="teamTable" lay-filter="teamTable"></table>
                 </div>
+            </div>
+            <div class="layui-card" th:if="${createteam!=null}">
+                <div class="layui-card-body" >
+                    <blockquote class="layui-elem-quote">
+                        你创建的团队还在等待指导老师批准申请，此时你将不能申请加入别人的团队。
+                        <button style="float: right;" class="layui-btn layui-btn-danger" onclick="quxiaochuangjian()">取消创建</button>
+                    </blockquote>
+                    <blockquote class="layui-elem-quote">
+                        <div class="layui-row layui-col-space10">
+                            <p class="layui-col-xs3">团队名称:<span th:text="${userTeam.teamname}"></span></p>
+                            <p class="layui-col-xs3">指导老师:<span th:text="${userTeam.teacher.truename}"></span></p>
+                            <p class="layui-col-xs3">学生队长:<span th:text="${userTeam.captain.truename}"></span></p>
+                            <p class="layui-col-xs3">团队介绍:<span th:text="${userTeam.info}"></span></p>
+                        </div>
+                    </blockquote>
+                    <blockquote class="layui-elem-quote">
+                        为了尽快让指导老师批准申请，请你上传团队宣传图片
+                        <button style="float: right;" class="layui-btn " onclick="picWatch()">上传图片</button>
+                    </blockquote>
+                </div>
+
             </div>
         </div>
         <div class="layui-col-md12" th:if="${session.loginUser.comid==null}">
@@ -128,7 +149,7 @@
 <script type="text/html" id="toolbarDemo1">
     <div class = "layui-btn-container" >
         <button class="layui-btn " lay-filter="bmstu" lay-submit="">查看申请加入学生</button>
-        <button class="layui-btn " onclick="picWatch()">宣传图片查看于修改</button>
+        <button class="layui-btn " onclick="picWatch()">宣传图片查看与修改</button>
         <button class="layui-btn layui-btn-danger" onclick="tuichu()"><i class="layui-icon"></i>退出团队</button>
         <button class="layui-btn"   onclick="location.reload()" title="刷新">
             <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
@@ -403,6 +424,7 @@
     var downloadUrl = /*[[@{/File/PersonFileDownload}]]*/;//获取动作地址
     var quxiaoshenqingUrl = /*[[@{/UserTeam/quxiaoshenqingUrl}]]*/;//获取动作地址
     var tuichuUrl = /*[[@{/UserTeam/tuichuUrl}]]*/;//获取动作地址
+    var quxiaochuangjianUrl = /*[[@{/UserTeam/quxiaochuangjianUrl}]]*/;//获取动作地址
     /*]]>*/
     //申请加入团队
     function teambm(id) {
@@ -467,22 +489,7 @@
     //查看团队成员详情
     function forwardTeam(id) {
         xadmin.open('弹出自动宽高',forwardTeamUrl+"?id="+id);
-        /* var flag = true;
-         $.ajax({
-             url: forwardTeamUrl,
-             data: {id: id},
-             async: true,
-             success: function (msg) {
-                 if (msg == "error") {
-                     flag = false;
-                 }
-             }
-         })
-         if (flag == true) {
-             layer.msg('重置成功!', {icon: 1, time: 1000});
-         } else {
-             layer.msg('重置失败!', {icon: 1, time: 1000});
-         }*/
+
     }
     function picWatch() {
         var id =$("#id").val();
@@ -545,6 +552,36 @@
                         });
                     }else {
                         layer.msg('退出失败', {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            layer.close(index);
+                            location.reload();//刷新父页面
+                        });
+                    }
+                }
+            });
+        });
+    }
+    //取消创建团队
+    function quxiaochuangjian() {
+        layer.confirm('是否取消', {icon: 3, title:'提示'}, function(index){
+            //do something
+            $.ajax({
+                async:false,//同步提交
+                url:quxiaochuangjianUrl, //执行的动作地址
+                success:function(msg){
+                    if(msg=='ok')//说明该验证码不对
+                    {
+                        layer.msg('成功', {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            layer.close(index);
+                            location.reload();//刷新父页面
+                        });
+                    }else {
+                        layer.msg('失败', {
                             icon: 1,
                             time: 2000 //2秒关闭（如果不配置，默认是3秒）
                         }, function(){

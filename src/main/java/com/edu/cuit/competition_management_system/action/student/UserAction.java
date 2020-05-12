@@ -39,15 +39,8 @@ public class UserAction {
     @Autowired
     ComTpService comTpService;
     @Autowired
-    TeamUserDao teamUserDao;
-    @Autowired
-    TeamService teamService;
-    @Autowired
     TeamUserService teamUserService;
-    @Autowired
-    TeamDao teamDao;
-    @Autowired
-    FileDao fileDao;
+
     @RequestMapping("index")
     public String index(HttpSession session){
         Users users = (Users) session.getAttribute("loginUser");
@@ -186,27 +179,5 @@ public class UserAction {
     }
 
 
-    /**
-     * 跳转到用户文档查询页面
-     * @param session
-     * @param request
-     * @return
-     */
-    @RequestMapping("toFile")
-    public String toFile(HttpSession session,HttpServletRequest request){
-        Users users = (Users)session.getAttribute("loginUser");
-        //查找公开文件
-        List<FileUpload> publicFile = fileDao.findAllByTeamid(null);
-        //查找组内文件
-        List<FileUpload> teamFile=null;
-        if(users.getTeamid()!=null){
-            teamFile = fileDao.findAllByTeamid(users.getTeamid());
-        }
-        //查找个人文件
-        List<FileUpload> personFile = fileDao.findAllByUserid(users.getId());
-        request.setAttribute("publicFile",publicFile);
-        request.setAttribute("teamFile",teamFile);
-        request.setAttribute("personFile",personFile);
-        return "user/file";
-    }
+
 }

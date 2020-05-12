@@ -5,11 +5,12 @@
 		<meta name="X-UA-Compatible" content="IE=edge"/>
 		<meta name="keywords" content="秘书学系"/>
 		<meta name="description" content="XX大学秘书学系"/>
-		<title>秘书学系</title>
+		<title>通知</title>
 		<link rel="stylesheet" type="text/css" th:href="@{/main/css/style.css}"/>
 		<link rel="stylesheet" th:href="@{/res/layui/css/layui.css}">
 		<script th:src="@{/res/jquery/jquery-3.3.1.min.js}"></script>
 	</head>
+
 	<body>
 	<div th:insert="~{main/commons/header::hearder}"></div>
 
@@ -42,7 +43,7 @@
 						<ul class="news-list" id="all">
 							<li th:each="notice:${session.noticeList}">
 								<a th:href="@{/BaseAction/nDetail(id=${notice.notid})}" th:text="${notice.title}">消息名称消息名称消息名称消息名称</a><span class="date" th:text="${notice.sendtime}">2016-05-05</span>
-								<p ><span th:text="${notice.content}"></span><a th:href="@{/BaseAction/nDetail(id=${notice.notid})}" class="more">[查看更多]</a></p>
+								<p ><span class="notice_span" th:text="${notice.content}" ></span><a th:href="@{/BaseAction/nDetail(id=${notice.notid})}" class="more">[查看更多]</a></p>
 							</li>
 						</ul>
 						<div class="clear"></div>

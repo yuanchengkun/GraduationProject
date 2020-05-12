@@ -24,7 +24,7 @@
 <div class="layui-fluid">
     <div class="layui-row">
         <div >
-            <img th:src="@{/teamPic/{filename}(filename=${team.pic})}" style="height: 200px;width: 200px">
+            <img th:src="@{/teamPic/{filename}(filename=${team.pic})}" style="height: 200px;width: 200px" id="imgnow">
         </div>
         <form class="layui-form">
                 <input name="teamid" th:value="${{id}}" type="hidden">
@@ -64,7 +64,7 @@
             , before: function (obj) {
                 //预读本地文件示例，不支持ie8
                 obj.preview(function (index, file, result) {
-                    $('#demo1').attr('src', result); //图片链接（base64）
+                    $('#imgnow').attr('src', result); //图片链接（base64）
                 });
             }
             , done: function (res) {

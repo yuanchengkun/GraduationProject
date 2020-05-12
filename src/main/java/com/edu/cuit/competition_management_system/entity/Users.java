@@ -4,6 +4,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(name = "jpacheckcom", procedureName = "checkcom", parameters = {
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "nowtime", type = String.class) }),
+})
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

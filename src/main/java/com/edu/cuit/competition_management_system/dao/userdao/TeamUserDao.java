@@ -10,8 +10,6 @@ import java.util.List;
 public interface TeamUserDao extends JpaRepository<TeamUser,Integer> {
     List<TeamUser> findAllByUseridAndStateAndTeamidNotNull(int userid,int state);
     List<TeamUser> findAllByTeamidAndState(int teamid,int state);
-    List<TeamUser> findAllByUserid(int userid);
-    List<TeamUser> findAllByTeamid(int teamid);
     @Modifying
     @Query("update TeamUser u set u.state = ?2 where u.id = ?1")
     void setState(int id, int state); //通过申请id修改用户申请状态

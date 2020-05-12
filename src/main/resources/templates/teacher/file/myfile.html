@@ -1,0 +1,333 @@
+<!DOCTYPE >
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>学生管理页面</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!--
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+-->
+        <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+        <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+        <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
+        <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+        <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body ">
+                            <form class="layui-form layui-col-space5">
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input class="layui-input" autocomplete="off" placeholder="团队资料查询" name="teamname" id="teamname">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input class="layui-input" autocomplete="off" placeholder="上传人查询" name="truename" id="truename">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input type="text"  placeholder="文件名查询" autocomplete="off" class="layui-input" name="filename" id="filename">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                        <i class="layui-icon">&#xe615;</i>
+                                    </button>
+                                    <button class="layui-btn" lay-submit="" lay-filter="sreach" onclick="location.reload()" title="刷新">
+                                        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-card-body ">
+                            <table id="tabTitle" lay-filter="tabTitle"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script type="text/html" id="stateclass">
+        <select name="filelimit" lay-filter="stateSelect" data-value="{{d.filelimit}}" >
+            <option value="0">个人文档</option>
+            <option value="1">团队文档</option>
+            <option value="2">公开文档</option>
+        </select>
+    </script>
+    <script type="text/html" id="barDemo">
+        <a onclick="downloadFile({{d.fileid}})" title="下载" href="javascript:;">
+            <i class="layui-icon">&#xe631;</i>
+        </a>
+        <a title="删除" onclick="deleteFile({{d.fileid}})" href="javascript:;">
+            <i class="layui-icon">&#xe640;</i>
+        </a>
+        <!-- 这里同样支持 laytpl 语法，如： -->
+        <!--{{#  if(d.experience > 100){ }}
+        <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+        {{#  } }}-->
+    </script>
+    <script type="text/html" id="toolbarDemo">
+        <div class = "layui-btn-container" >
+            <button class="layui-btn" id="upload"><i class="layui-icon"></i>上传文档</button>
+            <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
+                <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+            </button>
+        </div >
+    </script>
+    <script type="text/html" id="zizeng">
+        {{d.LAY_TABLE_INDEX+1}}
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var Url = /*[[@{/UserFile/pageMyFile}]]*/;//获取动作地址
+        var update = /*[[@{/AdminFile/updateFile}]]*/;//获取动作地址
+        var uploadUrl = /*[[@{/File/uploadFile}]]*/;//获取动作地址
+        var selectTeamUrl = /*[[@{/TeacherFile/selectTeamUrl}]]*/;//获取动作地址
+        /*]]>*/
+        layui.use(['table', 'layer', 'element', 'jquery', 'form','upload'], function (table, layer, element, $, form,upload) {
+                // 监听修改下拉选框到表格中
+            form.on('select(stateSelect)', function (data) {
+                var elem = $(data.elem);
+                var id = elem.parents('tr').first().find('td').eq(1).text();//当前用户id
+                var param ={"fileid":id,"filelimit":data.value};
+                $.ajax({
+                    url: update,
+                    data:{param:JSON.stringify(param)},
+                    async:true,
+                    success:function(msg){
+                        if(msg=="ok"){
+                            layer.msg('修改成功');
+                            return;
+                        }else {
+                            layer.msg('修改失败!',{icon:1,time:1000});
+                        }
+                    }
+                })
+            });
+            form.on('select(teamSelect)', function (data) {
+                var elem = $(data.elem);
+                var id = elem.parents('tr').first().find('td').eq(1).text();//当前用户id
+                var param ={"fileid":id,"teamid":data.value};
+                $.ajax({
+                    url: update,
+                    data:{param:JSON.stringify(param)},
+                    async:true,
+                    success:function(msg){
+                        if(msg=="ok"){
+                            layer.msg('修改成功');
+                            return;
+                        }else {
+                            layer.msg('修改失败!',{icon:1,time:1000});
+                        }
+                    }
+                })
+            });
+
+            var upload = layui.upload;
+
+            var table = layui.table;
+        //执行渲染初始化表格
+            table.render({
+                elem: '#tabTitle' //指定原始表格元素选择器（推荐id选择器）
+                ,url: Url
+                ,height: 'full-150'
+                ,page:true
+                ,limit:10
+                ,limits:[5,10,15,20]
+                ,method: 'post'
+                ,toolbar: '#toolbarDemo'
+                ,done: function (res, curr, count) {
+                    count || this.elem.next('.layui-table-view').find('.layui-table-header').css('overflow', 'auto');
+                    layui.each($('select'), function (index, item) {
+                        var elem = $(item);
+                        elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+                    });
+                    form.render();
+                    upload.render({
+                        elem: '#upload' //绑定元素
+                        ,url: uploadUrl //上传接口
+                        ,accept: 'file'
+                        ,size:10240
+                        ,done: function(res){
+                            //上传完毕回调
+                            layer.msg('上传成功',{icon:1,time:1000},function(){
+                                location.reload();
+                            });
+                        }
+                        ,error: function(){
+                            //请求异常回调
+                        }
+                    });
+
+                }
+                ,cols:  [
+                    [ //标题栏
+                        //{checkbox: true}
+                        ,{field:'zizeng', width:80, title: '序号',templet:'#zizeng'}
+                        ,{field: 'fileid', title: 'ID', width: 80,sort: true,hide:true}
+                        ,{field: 'filename', edit: 'text',title: '文件名', minwidth: 150}
+                        ,{field:'uploaddate', minwidth:100,title:'上传时间'
+                         }
+                         ,{field:'', width:200,title:'文档公开',templet:"#stateclass"
+                         }
+                        ,{field: '',  width: 80, title: '上传人'
+                            , templet: function (d) {
+                                return d.users.truename;
+                            }
+                         },{field: '',  width: 200, title: '所属小组'
+                            , templet: function (d) {
+                                 if(d.team!=null){
+                                     var selMaintenanceItem = '<select name="city" lay-filter="teamSelect" lay-verify="required" data-value="' + d.teamid + '" >'
+
+                                     $.ajax({
+                                         url: selectTeamUrl,
+                                         type: 'post',
+                                         async: false,
+                                         dataType:"json",
+                                         success: function (data) {
+                                             for (k in data.data) {
+                                                 selMaintenanceItem += '<option value=' + data.data[k].teamid + '>' + data.data[k].teamname + '</option>';
+                                             }
+                                             selMaintenanceItem
+                                                 += '</select>';
+                                         }
+                                     });
+                                     return selMaintenanceItem;
+                                 }
+                                 else {
+                                     var selMaintenanceItem = '<select name="city" lay-filter="teamSelect" lay-verify="required"  >'
+
+                                     $.ajax({
+                                         url: selectTeamUrl,
+                                         type: 'post',
+                                         async: false,
+                                         dataType:"json",
+                                         success: function (data) {
+                                             for (k in data.data) {
+                                                 selMaintenanceItem += '<option value=' + data.data[k].teamid + '>' + data.data[k].teamname + '</option>';
+                                             }
+                                             selMaintenanceItem
+                                                 += '</select>';
+                                         }
+                                     });
+                                     return selMaintenanceItem;
+                                }
+                            }
+                         }
+                        ,{field:'caozuo',toolbar: '#barDemo',title:'操作',  width: 80}
+                    ]
+                ]
+            });
+        })
+    </script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        /*]]>*/
+
+        //初始化时间组件
+        layui.use('laydate',
+        function() {
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#start' //指定元素
+            });
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#end' //指定元素
+            });
+
+        });
+
+    layui.use('table', function() {
+        var table = layui.table;
+        //监听单元格编辑
+        table.on('edit(tabTitle)',
+            function(obj) {
+                var value = obj.value //得到修改后的值
+                    ,
+                    data = obj.data //得到所在行所有键值
+                    ,
+                    field = obj.field; //得到字段
+                $.ajax({
+                    url: update,
+                    data:{param:JSON.stringify(data)},
+                    async:true,
+                    success:function(msg){
+                        if(msg=="ok"){
+                            layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
+                            return;
+                        }else {
+                            layer.msg('修改失败!',{icon:1,time:1000});
+                        }
+                    }
+                })
+            });
+
+
+
+    });
+    </script>
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/
+        var deleteUrl = /*[[@{/File/deleteFile}]]*/;//获取动作地址
+        var downloadUrl = /*[[@{/File/fileDownload}]]*/;//获取动作地址
+        /*]]>*/
+
+        /*文件-删除*/
+        function deleteFile(id) {
+            layer.confirm('是否删除文件', {icon: 3, title:'提示'}, function(index){
+                $.ajax({
+                    async:false,//同步提交
+                    url:deleteUrl, //执行的动作地址
+                    data:{fileId:id},
+                    success:function(statueCode){
+                        if(statueCode=='1')//说明该验证码不对
+                        {
+                            layer.msg('删除成功',{icon:1,time:1000},function(){
+                                layer.close(index);
+                                location.reload();
+                            });
+
+                        }else {
+                            layer.msg('删除失败',{icon:1,time:1000},function(){
+                                layer.close(index);
+                                location.reload();
+                            });
+                        }
+                    }
+                });
+            })
+        }
+        //下载文件
+        function downloadFile(id) {
+            layer.confirm('是否下载文件', {icon: 3, title:'提示'}, function(index){
+                var urlStr1 =downloadUrl;
+                //form提交下载
+                var form = $('<form></form>');
+                form.attr('style', 'display:none');
+                /*form.attr('target', '_blank');*/
+                form.attr('method', 'post'); //form提交路径      
+                form.attr('action', urlStr1)
+                var input = $('<input type="text" name="fileId" id="fileId" />'); // 可以添加一些参数
+                input.attr('value', id);
+                form.append(input);
+                $(document.body).append(form);
+                form.submit();
+                layer.close(index);
+            })
+        }
+    </script>
+</html>

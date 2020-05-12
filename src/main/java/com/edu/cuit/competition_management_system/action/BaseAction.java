@@ -1,9 +1,9 @@
 package com.edu.cuit.competition_management_system.action;
 
 import com.edu.cuit.competition_management_system.dao.userdao.ComDao;
-import com.edu.cuit.competition_management_system.entity.Competition;
-import com.edu.cuit.competition_management_system.entity.Notice;
-import com.edu.cuit.competition_management_system.entity.Users;
+import com.edu.cuit.competition_management_system.dao.userdao.FileDao;
+import com.edu.cuit.competition_management_system.dao.userdao.TeamDao;
+import com.edu.cuit.competition_management_system.entity.*;
 import com.edu.cuit.competition_management_system.service.ComTpService;
 import com.edu.cuit.competition_management_system.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,10 @@ public class BaseAction {
     ComTpService comTpService;
     @Autowired
     ComDao comDao;
+    @Autowired
+    TeamDao teamDao;
+    @Autowired
+    FileDao fileDao;
 
     /**
      * 初始化首页数据
@@ -47,9 +51,14 @@ public class BaseAction {
         Pageable pager = PageRequest.of(page,size);
         Page<Competition> competitions = comDao.findAllByEndtimeIsAfterAndPicIsNotNull(today.toString(),pager);
         List<Competition> competitionList = competitions.getContent();
-        session.setAttribute("noticeListInFive",noticeService.findNoticeInFiveDay());
-        session.setAttribute("comTp",comTpService.findAllComTp());
-        session.setAttribute("competitions",competitionList);
+        Page<Team> teams = teamDao.findAllByStateAndPicNotNull(1,pager);
+        List<Team> teamList =teams.getContent();
+        List<FileUpload> fileUploads = fileDao.findAllByFilelimit(2);//查询所有公开文档
+        session.setAttribute("noticeListInFive",noticeService.findNoticeInFiveDay());//公告数据
+        session.setAttribute("comTp",comTpService.findAllComTp());//初始化报名种类列表
+        session.setAttribute("competitions",competitionList);//竞赛宣传数据
+        session.setAttribute("teams",teamList);//团队宣传宣传数据
+        session.setAttribute("files",fileUploads);//初始化公开文档
         return "index";
     }
 

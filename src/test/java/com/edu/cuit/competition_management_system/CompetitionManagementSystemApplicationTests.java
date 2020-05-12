@@ -1,7 +1,9 @@
 package com.edu.cuit.competition_management_system;
 
+import com.edu.cuit.competition_management_system.dao.userdao.FileDao;
 import com.edu.cuit.competition_management_system.dao.userdao.TeamDao;
 import com.edu.cuit.competition_management_system.dao.userdao.TeamUserDao;
+import com.edu.cuit.competition_management_system.entity.FileUpload;
 import com.edu.cuit.competition_management_system.entity.Team;
 import com.edu.cuit.competition_management_system.entity.TeamUser;
 import com.edu.cuit.competition_management_system.service.TeamService;
@@ -9,10 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
 class CompetitionManagementSystemApplicationTests {
     @Autowired
     TeamDao teamDao;
+    @Autowired
+    FileDao fileDao;
     @Autowired
     TeamService teamService;
     @Autowired
@@ -20,8 +26,9 @@ class CompetitionManagementSystemApplicationTests {
 
     @Test
     void contextLoads() {
-        Team team = teamDao.findById(2).get();
-        System.out.println(team.toString());
+        //List<Team> teamList = teamDao.findAll();
+        List<FileUpload> fileUploadList = fileDao.findAll();
+        System.out.println(fileUploadList.toString());
     }
     @Test
     void contextLoads1() {

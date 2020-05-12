@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -37,4 +39,8 @@ public interface FindUser extends JpaRepository <Users,Integer>{
 
     List<Users> findAllByTeamid(Integer teamid);
     List<Users> findAllByTypeAndComtpidNotNull(int type);//查询所有的指导老师
+
+    //检查竞赛的存储过程
+    @Procedure(name = "jpacheckcom")
+    void checkcom(@Param("nowtime") String nowtime);
 }

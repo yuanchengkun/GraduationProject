@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-X-admin2.2</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!--
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+-->
+        <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+        <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+        <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+        <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+    <body>
+        <div class="layui-fluid">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md12" >
+                        <div class="layui-card">
+                            <div class="layui-card-header">团队批准</div>
+                            <div class="layui-card-body ">
+                                <table id="teamTable" lay-filter="teamTable"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </body>
+    <script type="text/html" id="barDemo">
+        <a  lay-event="jujue" title="拒绝" href="javascript:;" >
+            <i class="layui-icon">&#x1006;</i>
+        </a>
+        <a  lay-event="tongyi" title="同意" href="javascript:;" >
+            <i class="layui-icon">&#xe672;</i>
+        </a>
+    </script>
+    <script type="text/html" id="toolbarDemo">
+        <div class = "layui-btn-container" >
+            <button class="layui-btn" lay-submit=""  onclick="location.reload()" title="刷新">
+                <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+            </button>
+        </div >
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var Url = /*[[@{/TeacherTeam/pageTeampizhun}]]*/;//获取动作地址
+        var src = /*[[@{/teamPic}]]*/;//获取动作地址
+        var Tongyi = /*[[@{/TeacherTeam/tongyi}]]*/;//获取动作地址
+        var jujueUrl = /*[[@{/TeacherTeam/jujueUrl}]]*/;//获取动作地址
+        /*]]>*/
+
+        layui.use(['table', 'layer', 'element', 'jquery', 'form'], function (table, layer, element, $, form) {
+            var element = layui.element;
+            var table = layui.table;
+            table.render({
+                elem: '#teamTable' //指定原始表格元素选择器（推荐id选择器）
+                ,url: Url
+                ,height: 'full-150'
+                ,page:true
+                ,limit:10
+                ,limits:[5,10,15,20]
+                ,method: 'post'
+                ,toolbar: '#toolbarDemo'
+                ,where: {type: 1}
+                ,cols:  [
+                    [ //标题栏
+                        ,{field: 'teamid', title: 'ID', width: 80,sort: true}
+                        ,{field: 'teamname', title: '团队名', width: 120}
+                        ,{field:'state',  minWidth: 100,title:'团队状态',templet: function (d) {
+                            return d.teamState;
+                        }
+                    }
+                        ,{field:'captain.truename', width:100,title:'团队队长'
+                        ,templet: function (d) {
+                            return d.captain.truename;
+                        }
+                    }
+                        ,{field: 'competition.comtype.name',  Width: 80, title: '团队竞赛'
+                        , templet: function (d) {
+                            return d.competition.comtype.name;
+                        }
+                    }
+                        ,
+                        {
+                            field:'d.com.name',  Width: 80,title:'指导老师',
+                            templet: function (d) {
+
+                                return d.teacher.truename;
+                            }
+                        }
+                        ,{  minWidth: 200,title:'宣传图片',event:"updatePic",templet:function(d){
+                            var src1 = d.pic;
+
+                            var selMaintenanceItem = '<img   src="'+src+'/'+src1+'" >'
+                            return selMaintenanceItem;
+                        }}
+                        ,{field:'caozuo',toolbar: '#barDemo',title:'操作'}
+                    ]
+                ]
+            });
+
+            //监听行工具栏事件
+            table.on('tool(teamTable)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+                if(layEvent === 'tongyi'){ //同意
+                    layer.confirm('是否同意', function(index){
+                        $.ajax({
+                            async:false,//同步提交
+                            url:Tongyi, //执行的动作地址
+                            data:{parm:JSON.stringify(data)}, //传参数
+                            success:function(msg){
+                                if(msg=='ok')//说明该验证码不对
+                                {
+                                    layer.msg('成功', {
+                                        icon: 1,
+                                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                    }, function(){
+                                        layer.close(index);
+                                        location.reload();//刷新父页面
+                                    });
+                                }else {
+                                    layer.msg("失败")
+                                    layer.close(index);
+                                    window.parent.location.reload();//刷新父页面
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    });
+                } else if(layEvent === 'jujue'){ //拒绝
+                    layer.confirm('是否拒绝', function(index){
+                        $.ajax({
+                            async:false,//同步提交
+                            url:jujueUrl, //执行的动作地址
+                            data:{parm:JSON.stringify(data)}, //传参数
+                            success:function(msg){
+                                if(msg=='ok')//说明该验证码不对
+                                {
+                                    layer.msg('拒绝成功', {
+                                        icon: 1,
+                                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                    }, function(){
+                                        layer.close(index);
+                                        location.reload();//刷新父页面
+                                    });
+                                }else {
+                                    layer.msg("失败")
+                                    layer.close(index);
+                                    //window.parent.location.reload();//刷新父页面
+                                }
+                            }
+                        });
+
+
+                    });
+                }
+            });
+        })
+
+
+    </script>
+
+</html>

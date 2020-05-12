@@ -379,7 +379,7 @@ public class AdminMemberAction {
     @RequestMapping("teamuser")
     @ResponseBody
     public LayuiTable teamuser(int id){
-        List<TeamUser> teamUserList = teamUserDao.findAllByTeamid(id);
+        List<TeamUser> teamUserList = teamUserDao.findAllByTeamidAndState(id,0);
         LayuiTable layuiTable = new LayuiTable();
         layuiTable.setCode(0);
         layuiTable.setMsg("");
