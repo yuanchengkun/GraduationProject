@@ -180,19 +180,20 @@ public class UserTeamAction {
 
     /**
      * 同意用户申请加入团队
-     * @param parm 申请表记录
+     * @param id 申请表id
      * @param response
      * @throws IOException
      */
     @RequestMapping("tongyi")
-    public void tongyi(String parm,HttpServletResponse response) throws IOException{
+    public void tongyi(int id,HttpServletResponse response) throws IOException{
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
-        TeamUser teamUser = JSON.parseObject(parm, new TypeReference<TeamUser>() {});
+        //TeamUser teamUser = JSON.parseObject(parm, new TypeReference<TeamUser>() {});
         String msg="";
         try{
-            teamUserService.setTeamUserState(teamUser.getId(),0);//修改申请状态为通过
+            teamUserService.setTeamUserState(id,0);//修改申请状态为通过
             //修改用户表的teamid
+            TeamUser teamUser = teamUserDao.findById(id).get();
             Users users = teamUser.getStudent();
             users.setTeamid(teamUser.getTeamid());
             findUser.save(users);
@@ -209,16 +210,16 @@ public class UserTeamAction {
 
     /**
      * 拒绝学生接入团队
-     * @param parm
+     * @param id 申请表id
      * @return
      */
     @RequestMapping("jujue")
     @ResponseBody
-    public String jujue(String parm){
-        TeamUser teamUser = JSON.parseObject(parm, new TypeReference<TeamUser>() {});
+    public String jujue(int id){
+        //TeamUser teamUser = JSON.parseObject(parm, new TypeReference<TeamUser>() {});
         String msg = "";
         try{
-            teamUserService.setTeamUserState(teamUser.getId(),3);//修改申请状态为拒绝
+            teamUserService.setTeamUserState(id,3);//修改申请状态为拒绝
             msg="ok";
         }catch (Exception e){
             msg="error";

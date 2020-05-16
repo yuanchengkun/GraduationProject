@@ -105,10 +105,17 @@ public class AdminMemberAction {
      */
     @RequestMapping("pageUser")
     @ResponseBody
-    public LayuiTable pageUser(String type,String limit,String page){
+    public LayuiTable pageUser(String type,String truename,String username,String card,String limit,String page){
         LayuiTable layuiTable = new LayuiTable();
+        Users users = new Users();;
         //定义查询模板
-        Users users = new Users();
+        truename=(truename=="")?null:truename;
+        username=(username=="")?null:username;
+        card=(card=="")?null:card;
+        users.setTruename(truename);
+        users.setUsername(username);
+        if(card!=null)
+        users.setCard(Integer.parseInt(card));
         users.setType(Integer.parseInt(type));
         users.setState(1);
       //创建匹配器，即如何使用查询条件
@@ -124,7 +131,6 @@ public class AdminMemberAction {
         layuiTable.setData(usersList);
         return layuiTable;
     }
-
     /**
      * 查询所有无效状态数据
      *
@@ -387,4 +393,5 @@ public class AdminMemberAction {
         layuiTable.setData(teamUserList);
         return layuiTable;
     }
+
 }

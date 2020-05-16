@@ -188,7 +188,7 @@
                     $.ajax({
                         async:false,//同步提交
                         url:TongyiUrl, //执行的动作地址
-                        data:{parm:JSON.stringify(data)}, //传参数
+                        data:{id:JSON.stringify(data.id)}, //传参数
                         success:function(msg){
                             if(msg=='ok')//说明该验证码不对
                             {
@@ -213,7 +213,7 @@
                     $.ajax({
                         async:false,//同步提交
                         url:jujueUrl, //执行的动作地址
-                        data:{parm:JSON.stringify(data)}, //传参数
+                        data:{id:JSON.stringify(data.id)}, //传参数
                         success:function(msg){
                             if(msg=='ok')//说明该验证码不对
                             {
