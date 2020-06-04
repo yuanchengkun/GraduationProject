@@ -82,7 +82,6 @@ public class LoginAction {
     public String login(HttpServletRequest request,HttpSession session){
         String result="";
         Users users;
-
         String verifyCode = (String) session.getAttribute("vrifyCode");//session中保存的验证码
         //获得用户输入的用户名密码和验证码
         String username = request.getParameter("username");
@@ -147,7 +146,6 @@ public class LoginAction {
         String randomCode = RandomUtil.randomString(4);
         try {
             SendEmail.send(toEmail,randomCode);
-            //MailUtil.send(toEmail, "会议与培训网验证码", "您的邮箱验证码是："+randomCode, false);
             //把验证码保存到session中。
             session.setAttribute("randomCode",randomCode);
             //5分钟后删除session中的验证码
@@ -158,7 +156,6 @@ public class LoginAction {
             e.printStackTrace();
             msg="send_error";
             out.print(msg);
-
         }
     }
     /**
